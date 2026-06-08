@@ -1,0 +1,2136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salita — Learn Tagalog</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0d0a;
+    --surface: #1a1612;
+    --surface2: #231e18;
+    --surface3: #2e2720;
+    --gold: #d4a853;
+    --gold-light: #e8c47a;
+    --gold-dim: #8a6a2e;
+    --red: #c94040;
+    --green: #4a9e6b;
+    --blue: #4a7fc1;
+    --text: #f0ead8;
+    --text-dim: #a89878;
+    --text-muted: #6a5c48;
+    --border: #3a3020;
+    --border-gold: rgba(212,168,83,0.2);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* Header */
+  .site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(15,13,10,0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+    padding: 0 2rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--gold);
+    letter-spacing: -0.02em;
+  }
+  .logo span { color: var(--text-dim); font-weight: 400; font-style: italic; font-size: 0.9rem; margin-left: 8px; vertical-align: middle; }
+
+  .nav { display: flex; gap: 0.25rem; }
+  .nav-btn {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .nav-btn:hover, .nav-btn.active {
+    background: var(--surface2);
+    color: var(--gold);
+  }
+
+  /* Hero */
+  .hero {
+    padding-top: 64px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 30% 40%, rgba(212,168,83,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 80% 70%, rgba(201,64,64,0.04) 0%, transparent 50%);
+  }
+
+  .hero-pattern {
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      0deg, transparent, transparent 79px, rgba(212,168,83,0.03) 80px
+    ),
+    repeating-linear-gradient(
+      90deg, transparent, transparent 79px, rgba(212,168,83,0.03) 80px
+    );
+  }
+
+  .hero-content {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    padding: 2rem;
+    max-width: 720px;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    background: var(--surface2);
+    border: 1px solid var(--border-gold);
+    color: var(--gold);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 16px;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    color: var(--text);
+    letter-spacing: -0.03em;
+    animation: fadeUp 0.6s 0.1s ease both;
+    margin-bottom: 0.3rem;
+  }
+
+  .hero h1 .accent { color: var(--gold); font-style: italic; }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    max-width: 480px;
+    margin: 1.2rem auto 2.5rem;
+    animation: fadeUp 0.6s 0.2s ease both;
+    font-weight: 300;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gold);
+    display: block;
+  }
+  .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+  .hero-btns { display: flex; gap: 1rem; justify-content: center; animation: fadeUp 0.6s 0.4s ease both; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: var(--gold);
+    color: #0f0d0a;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
+  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(212,168,83,0.25); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    padding: 13px 28px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+  /* Main content */
+  .main { padding-top: 64px; }
+
+  /* Sections */
+  .section {
+    display: none;
+    padding: 4rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    animation: fadeUp 0.4s ease both;
+  }
+  .section.active { display: block; }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.02em;
+  }
+  .section-title .accent { color: var(--gold); font-style: italic; }
+  .section-sub { color: var(--text-dim); font-size: 1rem; margin-bottom: 3rem; font-weight: 300; }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover { border-color: var(--border-gold); transform: translateY(-2px); }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+
+  .word-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .word-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .word-card:hover { border-color: var(--gold-dim); transform: translateY(-2px); }
+  .word-card:hover::before { opacity: 1; }
+  .word-card.flipped .word-front { display: none; }
+  .word-card.flipped .word-back { display: block; }
+  .word-back { display: none; }
+
+  .tagalog { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--gold); }
+  .romanized { font-size: 0.78rem; color: var(--text-muted); font-style: italic; margin: 2px 0 6px; font-family: 'DM Mono', monospace; }
+  .english { font-size: 0.9rem; color: var(--text-dim); }
+  .category-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+  .cat-greeting { background: rgba(74,158,107,0.15); color: #6bc78a; }
+  .cat-food { background: rgba(212,168,83,0.15); color: #d4a853; }
+  .cat-number { background: rgba(74,127,193,0.15); color: #7aaee8; }
+  .cat-family { background: rgba(201,64,64,0.15); color: #e07070; }
+  .cat-daily { background: rgba(150,100,200,0.15); color: #c08de8; }
+  .cat-emotion { background: rgba(240,140,60,0.15); color: #f0963c; }
+  .cat-place { background: rgba(60,180,160,0.15); color: #5dd4c0; }
+  .cat-time { background: rgba(180,180,60,0.15); color: #d4d45a; }
+  .cat-body { background: rgba(220,80,120,0.15); color: #f08aaa; }
+  .cat-color { background: rgba(120,180,255,0.15); color: #90c8ff; }
+  .cat-nature { background: rgba(80,180,80,0.15); color: #70d870; }
+  .cat-action { background: rgba(255,160,60,0.15); color: #ffb050; }
+  .cat-clothing { background: rgba(180,120,220,0.15); color: #d0a0f0; }
+  .cat-health { background: rgba(255,100,100,0.15); color: #ff9090; }
+  .cat-transport { background: rgba(60,160,220,0.15); color: #60c8f8; }
+  .cat-school { background: rgba(200,160,60,0.15); color: #e8c050; }
+  .cat-adjective { background: rgba(100,200,160,0.15); color: #70e8b8; }
+
+  /* Fact cards */
+  .fact-card {
+    background: var(--surface);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    position: relative;
+  }
+  .fact-icon { font-size: 1.8rem; margin-bottom: 0.75rem; }
+  .fact-card h4 { color: var(--gold); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+  .fact-card p { color: var(--text-dim); font-size: 0.88rem; line-height: 1.7; }
+
+  /* Conjugation table */
+  .conj-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+  }
+  .conj-table th {
+    background: var(--surface2);
+    color: var(--gold);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 10px 16px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+  .conj-table td {
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+  .conj-table tr:hover td { background: var(--surface2); }
+  .conj-table .highlight { color: var(--gold); font-weight: 600; font-family: 'Playfair Display', serif; font-size: 1rem; }
+
+  /* Conversation */
+  .dialogue-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+  .dialogue-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--gold); margin-bottom: 0.25rem; }
+  .dialogue-context { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.5rem; font-style: italic; }
+
+  .dialogue-line {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    align-items: flex-start;
+  }
+  .dialogue-line.right { flex-direction: row-reverse; }
+
+  .speaker-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    border: 2px solid var(--border);
+  }
+  .speaker-a { background: rgba(212,168,83,0.15); border-color: var(--gold-dim); }
+  .speaker-b { background: rgba(74,127,193,0.15); border-color: rgba(74,127,193,0.4); }
+
+  .bubble {
+    max-width: 70%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 14px;
+  }
+  .dialogue-line.right .bubble { background: rgba(212,168,83,0.08); border-color: var(--border-gold); }
+  .bubble .tagalog-line { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 0.95rem; font-weight: 600; }
+  .bubble .english-line { color: var(--text-muted); font-size: 0.78rem; margin-top: 2px; }
+  .bubble .romanize-line { color: var(--text-muted); font-size: 0.72rem; font-style: italic; font-family: 'DM Mono', monospace; }
+
+  /* Quiz section */
+  .quiz-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .quiz-q { font-size: 1.1rem; color: var(--text); margin-bottom: 1.25rem; font-weight: 500; }
+  .quiz-q .qword { color: var(--gold); font-family: 'Playfair Display', serif; font-size: 1.3rem; }
+  .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .quiz-opt {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    transition: all 0.2s;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .quiz-opt:hover { border-color: var(--gold-dim); color: var(--text); }
+  .quiz-opt.correct { background: rgba(74,158,107,0.15); border-color: #4a9e6b; color: #6bc78a; }
+  .quiz-opt.wrong { background: rgba(201,64,64,0.12); border-color: #c94040; color: #e07070; }
+
+  .score-display {
+    background: var(--surface2);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .score-num { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--gold); font-weight: 900; }
+  .score-label { color: var(--text-muted); font-size: 0.85rem; }
+
+  /* Pronunciation guide */
+  .phon-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+  }
+  .phon-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .phon-row:last-child { border-bottom: none; }
+  .phon-letter {
+    width: 48px;
+    height: 48px;
+    background: var(--surface2);
+    border: 1px solid var(--border-gold);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--gold);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .phon-sound { font-size: 0.9rem; color: var(--text); font-weight: 500; }
+  .phon-example { font-size: 0.82rem; color: var(--text-muted); font-style: italic; }
+  .phon-tip { font-size: 0.78rem; color: #6bc78a; margin-top: 2px; }
+
+  /* Numbers */
+  .number-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.75rem;
+  }
+  .number-cell {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .number-cell:hover { border-color: var(--border-gold); }
+  .number-cell .num { font-family: 'DM Mono', monospace; font-size: 1.6rem; color: var(--gold-dim); font-weight: 500; }
+  .number-cell .tagalog-num { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--gold); font-weight: 700; margin: 4px 0 2px; }
+  .number-cell .romanized-num { font-size: 0.72rem; color: var(--text-muted); font-style: italic; font-family: 'DM Mono', monospace; }
+
+  /* Tabs */
+  .tab-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 8px 18px;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn.active, .tab-btn:hover {
+    background: rgba(212,168,83,0.12);
+    border-color: var(--gold-dim);
+    color: var(--gold);
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeUp 0.3s ease; }
+
+  /* Search/filter */
+  .search-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    width: 100%;
+    max-width: 360px;
+    margin-bottom: 1.5rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-bar:focus { border-color: var(--gold-dim); }
+  .search-bar::placeholder { color: var(--text-muted); }
+
+  /* Tip boxes */
+  .tip-box {
+    background: rgba(212,168,83,0.06);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .tip-box h5 { color: var(--gold); font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+  .tip-box p { color: var(--text-dim); font-size: 0.87rem; line-height: 1.6; }
+
+  /* Affixes */
+  .affix-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    margin-bottom: 1rem;
+  }
+  .affix-name {
+    display: inline-block;
+    background: rgba(212,168,83,0.12);
+    border: 1px solid var(--gold-dim);
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+  }
+  .affix-card h4 { color: var(--text); font-size: 1rem; margin-bottom: 0.4rem; }
+  .affix-card p { color: var(--text-dim); font-size: 0.87rem; margin-bottom: 1rem; line-height: 1.7; }
+  .affix-examples { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .affix-eg {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 0.82rem;
+  }
+  .affix-eg .tl { color: var(--gold); font-weight: 600; }
+  .affix-eg .en { color: var(--text-muted); }
+
+  /* Progress bar */
+  .progress-bar-wrap { background: var(--surface2); border-radius: 4px; height: 4px; margin-bottom: 2rem; }
+  .progress-bar { height: 4px; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 4px; transition: width 0.4s ease; }
+
+  /* Divider */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2.5rem 0;
+  }
+
+  /* Footer */
+  .site-footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+  .site-footer strong { color: var(--gold); }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .nav { display: none; }
+    .quiz-options { grid-template-columns: 1fr; }
+    .hero-stats { gap: 1.5rem; }
+    .card-grid { grid-template-columns: 1fr 1fr; }
+    .number-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* Tagalog script decorative */
+  .baybayin-deco {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    margin-top: 0.25rem;
+  }
+
+  /* Word highlight */
+  .highlight-word {
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  /* Sticky nav mobile */
+  .mobile-nav {
+    display: none;
+  }
+
+  @media (max-width: 640px) {
+    .mobile-nav {
+      display: flex;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(15,13,10,0.96);
+      border-top: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      z-index: 100;
+      justify-content: space-around;
+      padding: 8px 0 12px;
+    }
+    .mobile-nav-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.6rem;
+      cursor: pointer;
+      transition: color 0.2s;
+      padding: 4px 8px;
+    }
+    .mobile-nav-btn.active, .mobile-nav-btn:hover { color: var(--gold); }
+    .mobile-nav-btn .icon { font-size: 1.2rem; }
+    .main { padding-bottom: 80px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">Salita <span>Tagalog Lessons</span></div>
+  <nav class="nav">
+    <button class="nav-btn active" onclick="showSection('home')">Home</button>
+    <button class="nav-btn" onclick="showSection('vocab')">Vocabulary</button>
+    <button class="nav-btn" onclick="showSection('grammar')">Grammar</button>
+    <button class="nav-btn" onclick="showSection('convo')">Conversations</button>
+    <button class="nav-btn" onclick="showSection('numbers')">Numbers</button>
+    <button class="nav-btn" onclick="showSection('quiz')">Quiz</button>
+    <button class="nav-btn" onclick="showSection('facts')">Facts</button>
+  </nav>
+</header>
+
+<!-- ============ HOME ============ -->
+<div id="section-home" class="section active" style="display:block; padding-top: calc(64px + 4rem);">
+
+  <div class="hero-bg"></div>
+  <div class="hero-pattern"></div>
+
+  <div class="hero-content" style="margin: 0 auto; text-align:center;">
+    <div class="hero-tag">🇵🇭 Basic · Intermediate · Cultural</div>
+    <h1 class="section-title" style="font-size: clamp(2.8rem, 6vw, 4.5rem); margin-bottom:0.3rem;">
+      Kumusta! <br><span class="accent">Learn Tagalog</span>
+    </h1>
+    <p class="hero-sub" style="max-width:560px; margin: 1rem auto 2rem; font-size:1rem; color: var(--text-dim);">
+      The official language of the Philippines, spoken by over 85 million people. From greetings to grammar — your complete guide to connecting with Filipinos.
+    </p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">475+</span><span class="stat-label">Words & Phrases</span></div>
+      <div class="stat"><span class="stat-num">12</span><span class="stat-label">Conversations</span></div>
+      <div class="stat"><span class="stat-num">12</span><span class="stat-label">Word Categories</span></div>
+    </div>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="showSection('vocab')">Start Learning →</button>
+      <button class="btn-ghost" onclick="showSection('facts')">Tagalog Facts</button>
+    </div>
+  </div>
+
+  <hr class="divider" style="max-width:1100px; margin: 3rem auto;">
+
+  <!-- Quick-start modules -->
+  <div style="max-width:1100px; margin: 0 auto; padding: 0 1rem;">
+    <h2 class="section-title" style="font-size:1.8rem; margin-bottom:0.25rem;">Where to <span class="accent">begin</span></h2>
+    <p class="section-sub" style="margin-bottom:1.5rem;">Choose a module and start speaking today.</p>
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:1rem;">
+      <div class="card" onclick="showSection('vocab')" style="cursor:pointer;">
+        <div style="font-size:2rem; margin-bottom:0.75rem;">📖</div>
+        <h3 style="color:var(--gold); font-size:1.1rem; margin-bottom:0.3rem;">Vocabulary</h3>
+        <p style="color:var(--text-dim); font-size:0.85rem;">500+ essential words with flashcard-style practice — greetings, food, family, body parts, colors, nature, actions, clothing, health, transport & more.</p>
+      </div>
+      <div class="card" onclick="showSection('grammar')" style="cursor:pointer;">
+        <div style="font-size:2rem; margin-bottom:0.75rem;">🔤</div>
+        <h3 style="color:var(--gold); font-size:1.1rem; margin-bottom:0.3rem;">Grammar & Conjugation</h3>
+        <p style="color:var(--text-dim); font-size:0.85rem;">Tagalog verb focus, affixes (um-, mag-, -in, -an), tenses, and pronoun charts.</p>
+      </div>
+      <div class="card" onclick="showSection('convo')" style="cursor:pointer;">
+        <div style="font-size:2rem; margin-bottom:0.75rem;">💬</div>
+        <h3 style="color:var(--gold); font-size:1.1rem; margin-bottom:0.3rem;">Conversations</h3>
+        <p style="color:var(--text-dim); font-size:0.85rem;">12 real-life dialogues — introductions, shopping, eating, travel, small talk and more.</p>
+      </div>
+      <div class="card" onclick="showSection('numbers')" style="cursor:pointer;">
+        <div style="font-size:2rem; margin-bottom:0.75rem;">🔢</div>
+        <h3 style="color:var(--gold); font-size:1.1rem; margin-bottom:0.3rem;">Numbers & Time</h3>
+        <p style="color:var(--text-dim); font-size:0.85rem;">Count in Tagalog and Spanish loanwords. Learn how to tell time and express dates.</p>
+      </div>
+      <div class="card" onclick="showSection('quiz')" style="cursor:pointer;">
+        <div style="font-size:2rem; margin-bottom:0.75rem;">✏️</div>
+        <h3 style="color:var(--gold); font-size:1.1rem; margin-bottom:0.3rem;">Quiz Yourself</h3>
+        <p style="color:var(--text-dim); font-size:0.85rem;">Test your knowledge with randomized multiple-choice quizzes to track your progress.</p>
+      </div>
+      <div class="card" onclick="showSection('facts')" style="cursor:pointer;">
+        <div style="font-size:2rem; margin-bottom:0.75rem;">💡</div>
+        <h3 style="color:var(--gold); font-size:1.1rem; margin-bottom:0.3rem;">Fun Facts</h3>
+        <p style="color:var(--text-dim); font-size:0.85rem;">Cultural insights, linguistic curiosities, and the story behind the Filipino language.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Daily words strip -->
+  <div style="max-width:1100px; margin: 3rem auto 0; padding: 0 1rem;">
+    <div style="background: var(--surface); border: 1px solid var(--border-gold); border-radius: var(--radius); padding: 1.5rem 2rem;">
+      <h3 style="color: var(--gold); font-size:0.8rem; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:1rem;">🌟 Most Common Daily Words</h3>
+      <div style="display:flex; flex-wrap:wrap; gap:0.75rem;">
+        <span onclick="showWordDetail('Oo','Yes','Oh-oh')" style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:6px 14px; cursor:pointer; transition:all 0.2s; font-size:0.9rem;" onmouseover="this.style.borderColor='var(--gold-dim)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">Oo — Yes</span>
+        <span onclick="showWordDetail('Hindi','No','Hin-dí')" style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:6px 14px; cursor:pointer; transition:all 0.2s; font-size:0.9rem;" onmouseover="this.style.borderColor='var(--gold-dim)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">Hindi — No</span>
+        <span onclick="showWordDetail('Salamat','Thank you','Sa-lá-mat')" style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:6px 14px; cursor:pointer; transition:all 0.2s; font-size:0.9rem;" onmouseover="this.style.borderColor='var(--gold-dim)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">Salamat — Thank you</span>
+        <span onclick="showWordDetail('Paki-','Please (prefix)','Pa-kí')" style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:6px 14px; cursor:pointer; transition:all 0.2s; font-size:0.9rem;" onmouseover="this.style.borderColor='var(--gold-dim)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">Paki— Please</span>
+        <span onclick="showWordDetail('Kumusta','How are you?','Ku-mús-ta')" style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:6px 14px; cursor:pointer; transition:all 0.2s; font-size:0.9rem;" onmouseover="this.style.borderColor='var(--gold-dim)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">Kumusta — How are you?</span>
+        <span onclick="showWordDetail('Kain','Eat','Ka-ín')" style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:6px 14px; cursor:pointer; transition:all 0.2s; font-size:0.9rem;" onmouseover="this.style.borderColor='var(--gold-dim)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">Kain — Eat</span>
+        <span onclick="showWordDetail('Tubig','Water','Tu-bíg')" style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:6px 14px; cursor:pointer; transition:all 0.2s; font-size:0.9rem;" onmouseover="this.style.borderColor='var(--gold-dim)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">Tubig — Water</span>
+        <span onclick="showWordDetail('Mahal','Expensive / Love','Ma-hál')" style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:6px 14px; cursor:pointer; transition:all 0.2s; font-size:0.9rem;" onmouseover="this.style.borderColor='var(--gold-dim)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">Mahal — Love / Expensive</span>
+        <span onclick="showWordDetail('Ako','I / Me','A-kó')" style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:6px 14px; cursor:pointer; transition:all 0.2s; font-size:0.9rem;" onmouseover="this.style.borderColor='var(--gold-dim)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">Ako — I / Me</span>
+        <span onclick="showWordDetail('Pwede','Can / May','Pwé-de')" style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:6px 14px; cursor:pointer; transition:all 0.2s; font-size:0.9rem;" onmouseover="this.style.borderColor='var(--gold-dim)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">Pwede — Can / May</span>
+        <span onclick="showWordDetail('Gusto','Want / Like','Gús-to')" style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:6px 14px; cursor:pointer; transition:all 0.2s; font-size:0.9rem;" onmouseover="this.style.borderColor='var(--gold-dim)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">Gusto — Want</span>
+        <span onclick="showWordDetail('Saan','Where','Sa-án')" style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:6px 14px; cursor:pointer; transition:all 0.2s; font-size:0.9rem;" onmouseover="this.style.borderColor='var(--gold-dim)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">Saan — Where</span>
+      </div>
+      <p style="color:var(--text-muted); font-size:0.75rem; margin-top:1rem;">💡 Click any word for more detail</p>
+    </div>
+  </div>
+
+  <!-- Word detail modal (inline) -->
+  <div id="word-detail-modal" style="display:none; max-width:1100px; margin: 1.5rem auto 0; padding: 0 1rem;">
+    <div style="background:var(--surface2); border:1px solid var(--gold-dim); border-radius:var(--radius); padding:1.5rem; position:relative;">
+      <button onclick="document.getElementById('word-detail-modal').style.display='none'" style="position:absolute;top:12px;right:12px;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.2rem;">✕</button>
+      <div id="wdm-tagalog" class="tagalog" style="font-size:2rem;"></div>
+      <div id="wdm-romanized" class="romanized"></div>
+      <div id="wdm-english" style="color:var(--text);font-size:1rem;margin-top:0.5rem;"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ VOCABULARY ============ -->
+<div id="section-vocab" class="section">
+  <h2 class="section-title">Vocabulary <span class="accent">Library</span></h2>
+  <p class="section-sub">475+ words across 16 categories. Flip any card to test yourself — browse by category or search.</p>
+
+  <div class="tab-bar" id="vocab-tabs">
+    <button class="tab-btn active" onclick="filterVocab('all', this)">All (500+)</button>
+    <button class="tab-btn" onclick="filterVocab('greeting', this)">Greetings</button>
+    <button class="tab-btn" onclick="filterVocab('daily', this)">Daily Life</button>
+    <button class="tab-btn" onclick="filterVocab('food', this)">Food</button>
+    <button class="tab-btn" onclick="filterVocab('family', this)">Family</button>
+    <button class="tab-btn" onclick="filterVocab('emotion', this)">Emotions</button>
+    <button class="tab-btn" onclick="filterVocab('place', this)">Places</button>
+    <button class="tab-btn" onclick="filterVocab('time', this)">Time</button>
+    <button class="tab-btn" onclick="filterVocab('body', this)">Body</button>
+    <button class="tab-btn" onclick="filterVocab('color', this)">Colors</button>
+    <button class="tab-btn" onclick="filterVocab('nature', this)">Nature</button>
+    <button class="tab-btn" onclick="filterVocab('action', this)">Actions</button>
+    <button class="tab-btn" onclick="filterVocab('clothing', this)">Clothing</button>
+    <button class="tab-btn" onclick="filterVocab('health', this)">Health</button>
+    <button class="tab-btn" onclick="filterVocab('transport', this)">Transport</button>
+    <button class="tab-btn" onclick="filterVocab('school', this)">School & Work</button>
+    <button class="tab-btn" onclick="filterVocab('adjective', this)">Adjectives</button>
+  </div>
+
+  <input class="search-bar" placeholder="Search Tagalog or English..." oninput="searchVocab(this.value)" id="vocab-search">
+
+  <div id="vocab-grid" class="card-grid"></div>
+</div>
+
+<!-- ============ GRAMMAR ============ -->
+<div id="section-grammar" class="section">
+  <h2 class="section-title">Grammar & <span class="accent">Conjugation</span></h2>
+  <p class="section-sub">Tagalog is a verb-focus language with a rich affixation system. Master the patterns and you unlock the entire language.</p>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showGrammarTab('pronouns', this)">Pronouns</button>
+    <button class="tab-btn" onclick="showGrammarTab('affixes', this)">Affixes</button>
+    <button class="tab-btn" onclick="showGrammarTab('tenses', this)">Tenses</button>
+    <button class="tab-btn" onclick="showGrammarTab('sentence', this)">Sentence Structure</button>
+    <button class="tab-btn" onclick="showGrammarTab('questions', this)">Question Words</button>
+  </div>
+
+  <!-- Pronouns -->
+  <div id="gtab-pronouns" class="tab-content active">
+    <div class="tip-box">
+      <h5>💡 Key Insight</h5>
+      <p>Tagalog pronouns change based on their grammatical role: subject (nominative), possessive (genitive), and object/location (dative). Unlike English, Tagalog has a singular/plural distinction for "we" — including or excluding the listener.</p>
+    </div>
+
+    <h3 style="color:var(--gold); margin-bottom:1rem; font-size:1.1rem;">Personal Pronouns</h3>
+    <div style="overflow-x:auto; margin-bottom:2rem;">
+      <table class="conj-table">
+        <thead>
+          <tr><th>Person</th><th>Nominative (Subject)</th><th>Genitive (Possessive)</th><th>Dative (Object)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1st Singular (I/me)</td><td class="highlight">Ako</td><td class="highlight">Ko / Akin</td><td class="highlight">Sa akin</td></tr>
+          <tr><td>2nd Singular (You)</td><td class="highlight">Ikaw / Ka</td><td class="highlight">Mo / Iyo</td><td class="highlight">Sa iyo</td></tr>
+          <tr><td>3rd Singular (He/She/It)</td><td class="highlight">Siya</td><td class="highlight">Niya</td><td class="highlight">Sa kanya</td></tr>
+          <tr><td>1st Plural Incl. (We — you & I)</td><td class="highlight">Tayo</td><td class="highlight">Natin</td><td class="highlight">Sa atin</td></tr>
+          <tr><td>1st Plural Excl. (We — not you)</td><td class="highlight">Kami</td><td class="highlight">Namin</td><td class="highlight">Sa amin</td></tr>
+          <tr><td>2nd Plural (You all)</td><td class="highlight">Kayo</td><td class="highlight">Ninyo</td><td class="highlight">Sa inyo</td></tr>
+          <tr><td>3rd Plural (They)</td><td class="highlight">Sila</td><td class="highlight">Nila</td><td class="highlight">Sa kanila</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tip-box">
+      <h5>✏️ Usage Examples</h5>
+      <p>
+        <span class="highlight-word">Ako</span> ay Pilipino. — I am Filipino.<br>
+        <span class="highlight-word">Ikaw</span> ay maganda. — You are beautiful.<br>
+        Kaibigan <span class="highlight-word">niya</span> si Maria. — Maria is her friend.<br>
+        <span class="highlight-word">Tayo</span> ay magkakain. — We (you and I) will eat together.
+      </p>
+    </div>
+  </div>
+
+  <!-- Affixes -->
+  <div id="gtab-affixes" class="tab-content">
+    <div class="tip-box">
+      <h5>💡 The Heart of Tagalog Grammar</h5>
+      <p>Tagalog builds meaning through affixes — prefixes, suffixes, and infixes added to root words (salita). One root can become dozens of words. The affix also signals grammatical focus: who is doing the action, what is being acted upon, or where.</p>
+    </div>
+
+    <div class="affix-card">
+      <div class="affix-name">um-</div>
+      <h4>Actor Focus — Intransitive / Motion verbs</h4>
+      <p>Added before the first vowel of the root (infix) or as a prefix before consonants. The subject performs the action. Used for intransitive or motion verbs.</p>
+      <div class="affix-examples">
+        <div class="affix-eg"><span class="tl">kain</span> <span class="en">→</span> <span class="tl">kumain</span> <span class="en">(to eat)</span></div>
+        <div class="affix-eg"><span class="tl">lakad</span> <span class="en">→</span> <span class="tl">lumakad</span> <span class="en">(to walk)</span></div>
+        <div class="affix-eg"><span class="tl">punta</span> <span class="en">→</span> <span class="tl">pumunta</span> <span class="en">(to go)</span></div>
+        <div class="affix-eg"><span class="tl">sulat</span> <span class="en">→</span> <span class="tl">sumulat</span> <span class="en">(to write)</span></div>
+        <div class="affix-eg"><span class="tl">tulog</span> <span class="en">→</span> <span class="tl">matulog</span> <span class="en">(to sleep)</span></div>
+      </div>
+    </div>
+
+    <div class="affix-card">
+      <div class="affix-name">mag-</div>
+      <h4>Actor Focus — Activities & Routines</h4>
+      <p>Used for deliberate activities, routines, and transitive actions where the actor is the focus. Very common in everyday speech.</p>
+      <div class="affix-examples">
+        <div class="affix-eg"><span class="tl">luto</span> <span class="en">→</span> <span class="tl">magluto</span> <span class="en">(to cook)</span></div>
+        <div class="affix-eg"><span class="tl">trabaho</span> <span class="en">→</span> <span class="tl">magtrabaho</span> <span class="en">(to work)</span></div>
+        <div class="affix-eg"><span class="tl">aral</span> <span class="en">→</span> <span class="tl">mag-aral</span> <span class="en">(to study)</span></div>
+        <div class="affix-eg"><span class="tl">basa</span> <span class="en">→</span> <span class="tl">magbasa</span> <span class="en">(to read)</span></div>
+        <div class="affix-eg"><span class="tl">linis</span> <span class="en">→</span> <span class="tl">maglinis</span> <span class="en">(to clean)</span></div>
+      </div>
+    </div>
+
+    <div class="affix-card">
+      <div class="affix-name">-in</div>
+      <h4>Object Focus — Suffix</h4>
+      <p>When the object of the action is the grammatical focus, the verb takes -in as a suffix. The sentence emphasizes what is being done to.</p>
+      <div class="affix-examples">
+        <div class="affix-eg"><span class="tl">kain</span> <span class="en">→</span> <span class="tl">kainin</span> <span class="en">(to eat [it])</span></div>
+        <div class="affix-eg"><span class="tl">basa</span> <span class="en">→</span> <span class="tl">basahin</span> <span class="en">(to read [it])</span></div>
+        <div class="affix-eg"><span class="tl">bigay</span> <span class="en">→</span> <span class="tl">bigyan</span> <span class="en">(to give [to])</span></div>
+        <div class="affix-eg"><span class="tl">punta</span> <span class="en">→</span> <span class="tl">puntahan</span> <span class="en">(to go to [a place])</span></div>
+      </div>
+    </div>
+
+    <div class="affix-card">
+      <div class="affix-name">-an</div>
+      <h4>Locative / Benefactive Focus</h4>
+      <p>Focuses on the location, recipient, or beneficiary of the action. Can also intensify or indicate direction.</p>
+      <div class="affix-examples">
+        <div class="affix-eg"><span class="tl">linis</span> <span class="en">→</span> <span class="tl">linisin</span> <span class="en">(to clean [it])</span></div>
+        <div class="affix-eg"><span class="tl">sulat</span> <span class="en">→</span> <span class="tl">sulatan</span> <span class="en">(to write to)</span></div>
+        <div class="affix-eg"><span class="tl">takbo</span> <span class="en">→</span> <span class="tl">takbuhan</span> <span class="en">(to run to/from)</span></div>
+      </div>
+    </div>
+
+    <div class="affix-card">
+      <div class="affix-name">ma-</div>
+      <h4>Adjective / Stative Prefix</h4>
+      <p>Creates adjectives from nouns and describes states or qualities. Extremely productive — most Tagalog adjectives use this prefix.</p>
+      <div class="affix-examples">
+        <div class="affix-eg"><span class="tl">ganda</span> <span class="en">→</span> <span class="tl">maganda</span> <span class="en">(beautiful)</span></div>
+        <div class="affix-eg"><span class="tl">bait</span> <span class="en">→</span> <span class="tl">mabait</span> <span class="en">(kind, good)</span></div>
+        <div class="affix-eg"><span class="tl">lakas</span> <span class="en">→</span> <span class="tl">malakas</span> <span class="en">(strong)</span></div>
+        <div class="affix-eg"><span class="tl">bilis</span> <span class="en">→</span> <span class="tl">mabilis</span> <span class="en">(fast)</span></div>
+        <div class="affix-eg"><span class="tl">hirap</span> <span class="en">→</span> <span class="tl">mahirap</span> <span class="en">(difficult, poor)</span></div>
+      </div>
+    </div>
+
+    <div class="affix-card">
+      <div class="affix-name">nag- / nag- + -in</div>
+      <h4>Past Tense — Actor / Object Focus</h4>
+      <p>The past tense of mag- verbs uses nag-. For um- verbs in the past, the infix stays but the context changes. Past tense signals completed actions.</p>
+      <div class="affix-examples">
+        <div class="affix-eg"><span class="tl">magluto</span> <span class="en">→</span> <span class="tl">nagluto</span> <span class="en">(cooked)</span></div>
+        <div class="affix-eg"><span class="tl">kumain</span> <span class="en">→</span> <span class="tl">kumain</span> <span class="en">(ate — same form)</span></div>
+        <div class="affix-eg"><span class="tl">pumunta</span> <span class="en">→</span> <span class="tl">pumunta</span> <span class="en">(went — same form)</span></div>
+        <div class="affix-eg"><span class="tl">mag-aral</span> <span class="en">→</span> <span class="tl">nag-aral</span> <span class="en">(studied)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tenses -->
+  <div id="gtab-tenses" class="tab-content">
+    <div class="tip-box">
+      <h5>💡 Aspect, Not Tense</h5>
+      <p>Tagalog technically uses <strong>aspect</strong> rather than strict tense — verbs show whether an action is completed, in progress, or anticipated. Context usually clarifies the time frame.</p>
+    </div>
+
+    <h3 style="color:var(--gold); margin-bottom:1rem; font-size:1.1rem;">Verb Conjugation: <em>kumain</em> (to eat)</h3>
+    <div style="overflow-x:auto; margin-bottom:2rem;">
+      <table class="conj-table">
+        <thead>
+          <tr><th>Aspect</th><th>Tagalog Form</th><th>Example Sentence</th><th>Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Infinitive</td><td class="highlight">Kumain</td><td>Gusto kong kumain ng sushi.</td><td>I want to eat sushi.</td></tr>
+          <tr><td>Past (Completed)</td><td class="highlight">Kumain</td><td>Kumain na ako.</td><td>I have already eaten.</td></tr>
+          <tr><td>Present (Ongoing)</td><td class="highlight">Kumakain</td><td>Kumakain siya ngayon.</td><td>She is eating now.</td></tr>
+          <tr><td>Future (Contemplated)</td><td class="highlight">Kakain</td><td>Kakain tayo mamaya.</td><td>We will eat later.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="color:var(--gold); margin-bottom:1rem; font-size:1.1rem;">Verb Conjugation: <em>magluto</em> (to cook)</h3>
+    <div style="overflow-x:auto; margin-bottom:2rem;">
+      <table class="conj-table">
+        <thead>
+          <tr><th>Aspect</th><th>Tagalog Form</th><th>Example Sentence</th><th>Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Infinitive</td><td class="highlight">Magluto</td><td>Marunong siyang magluto.</td><td>She knows how to cook.</td></tr>
+          <tr><td>Past (Completed)</td><td class="highlight">Nagluto</td><td>Nagluto kami ng adobo.</td><td>We cooked adobo.</td></tr>
+          <tr><td>Present (Ongoing)</td><td class="highlight">Nagluluto</td><td>Nagluluto ang nanay ko.</td><td>My mother is cooking.</td></tr>
+          <tr><td>Future (Contemplated)</td><td class="highlight">Magluluto</td><td>Magluluto ako bukas.</td><td>I will cook tomorrow.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tip-box">
+      <h5>📌 The Pattern</h5>
+      <p>For <strong>um- verbs</strong>: Past = same as infinitive (with context marker <em>na</em>) | Present = double first syllable | Future = first syllable only<br><br>
+      For <strong>mag- verbs</strong>: Past = change mag→nag | Present = change mag→naglalo | Future = change mag→maglalo</p>
+    </div>
+  </div>
+
+  <!-- Sentence Structure -->
+  <div id="gtab-sentence" class="tab-content">
+    <div class="tip-box">
+      <h5>💡 Verb-Initial Language</h5>
+      <p>Tagalog typically places the <strong>verb first</strong>, followed by the subject and then objects. However, word order is flexible — emphasis shifts the focus. The particle <em>ang</em> marks the subject/topic, <em>ng</em> marks the object, and <em>sa</em> marks location or direction.</p>
+    </div>
+
+    <h3 style="color:var(--gold); margin-bottom:1rem;">Basic Particles</h3>
+    <div style="overflow-x:auto; margin-bottom:2rem;">
+      <table class="conj-table">
+        <thead><tr><th>Particle</th><th>Function</th><th>Example</th><th>Translation</th></tr></thead>
+        <tbody>
+          <tr><td class="highlight">Ang</td><td>Subject/Topic marker</td><td>Kumain <strong>ang</strong> bata.</td><td>The child ate.</td></tr>
+          <tr><td class="highlight">Ng</td><td>Object marker / possessive</td><td>Kumain siya <strong>ng</strong> gulay.</td><td>She ate vegetables.</td></tr>
+          <tr><td class="highlight">Sa</td><td>Location / direction / dative</td><td>Pumunta siya <strong>sa</strong> palengke.</td><td>She went to the market.</td></tr>
+          <tr><td class="highlight">Si</td><td>Personal name subject marker</td><td>Kumain <strong>si</strong> Maria.</td><td>Maria ate.</td></tr>
+          <tr><td class="highlight">Ni</td><td>Personal name object/possessive</td><td>Libro <strong>ni</strong> Juan.</td><td>Juan's book.</td></tr>
+          <tr><td class="highlight">Kay</td><td>Personal name dative</td><td>Ibinigay ko <strong>kay</strong> Pedro.</td><td>I gave it to Pedro.</td></tr>
+          <tr><td class="highlight">Ay</td><td>Topic inversion marker</td><td>Ang bata <strong>ay</strong> kumain.</td><td>The child ate. (formal)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-bottom:2rem;">
+      <div class="card">
+        <h4 style="color:var(--gold); margin-bottom:0.75rem; font-size:0.9rem;">✅ Basic Sentence</h4>
+        <p style="color:var(--text-dim); font-size:0.85rem; margin-bottom:0.5rem;"><strong style="color:var(--text);">Nagluto ang babae ng adobo sa kusina.</strong></p>
+        <p style="font-size:0.82rem; color:var(--text-muted);">The woman cooked adobo in the kitchen.</p>
+        <div style="margin-top:0.75rem; font-size:0.78rem; color:var(--text-muted); line-height:1.8;">
+          <em>Nagluto</em> = cooked (verb)<br>
+          <em>ang babae</em> = the woman (topic)<br>
+          <em>ng adobo</em> = adobo (object)<br>
+          <em>sa kusina</em> = in the kitchen (location)
+        </div>
+      </div>
+      <div class="card">
+        <h4 style="color:var(--gold); margin-bottom:0.75rem; font-size:0.9rem;">📌 Negation</h4>
+        <p style="color:var(--text-dim); font-size:0.85rem; margin-bottom:0.5rem;">To negate, use <strong style="color:var(--text);">hindi</strong> before the verb:</p>
+        <p style="color:var(--text-dim); font-size:0.85rem;"><strong style="color:var(--red);">Hindi</strong> kumain ang bata. — The child did not eat.</p>
+        <p style="color:var(--text-dim); font-size:0.85rem; margin-top:0.5rem;"><strong style="color:var(--red);">Hindi</strong> ako marunong mag-Tagalog. — I don't know Tagalog.</p>
+        <p style="color:var(--text-dim); font-size:0.85rem; margin-top:0.5rem;"><strong style="color:var(--red);">Huwag</strong> kumain ng marami! — Don't eat too much! (command)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Questions -->
+  <div id="gtab-questions" class="tab-content">
+    <h3 style="color:var(--gold); margin-bottom:1rem;">Question Words (Mga Tanong)</h3>
+    <div style="overflow-x:auto; margin-bottom:2rem;">
+      <table class="conj-table">
+        <thead><tr><th>Tagalog</th><th>Meaning</th><th>Example</th><th>Translation</th></tr></thead>
+        <tbody>
+          <tr><td class="highlight">Ano</td><td>What</td><td>Ano ang pangalan mo?</td><td>What is your name?</td></tr>
+          <tr><td class="highlight">Sino</td><td>Who</td><td>Sino siya?</td><td>Who is she/he?</td></tr>
+          <tr><td class="highlight">Saan</td><td>Where</td><td>Saan ka pupunta?</td><td>Where are you going?</td></tr>
+          <tr><td class="highlight">Kailan</td><td>When</td><td>Kailan ka babalik?</td><td>When will you return?</td></tr>
+          <tr><td class="highlight">Bakit</td><td>Why</td><td>Bakit ka umiiyak?</td><td>Why are you crying?</td></tr>
+          <tr><td class="highlight">Paano</td><td>How</td><td>Paano mo ginawa ito?</td><td>How did you do this?</td></tr>
+          <tr><td class="highlight">Ilan</td><td>How many</td><td>Ilan ang kapatid mo?</td><td>How many siblings do you have?</td></tr>
+          <tr><td class="highlight">Magkano</td><td>How much</td><td>Magkano ito?</td><td>How much is this?</td></tr>
+          <tr><td class="highlight">Alin</td><td>Which</td><td>Alin ang gusto mo?</td><td>Which do you want?</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tip-box">
+      <h5>💡 Yes/No Questions</h5>
+      <p>To form a yes/no question, simply raise your intonation at the end of a statement, or add <strong>ba</strong> after the first word or verb:<br><br>
+      <strong>Kumain ka na ba?</strong> — Have you eaten yet?<br>
+      <strong>Maganda ba siya?</strong> — Is she beautiful?<br>
+      <strong>Pilipino ka ba?</strong> — Are you Filipino?</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CONVERSATIONS ============ -->
+<div id="section-convo" class="section">
+  <h2 class="section-title">Real <span class="accent">Conversations</span></h2>
+  <p class="section-sub">Practice these everyday dialogues to speak naturally with Filipinos.</p>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showConvoTab('intro', this)">Introductions</button>
+    <button class="tab-btn" onclick="showConvoTab('small', this)">Small Talk</button>
+    <button class="tab-btn" onclick="showConvoTab('food', this)">Ordering Food</button>
+    <button class="tab-btn" onclick="showConvoTab('shop', this)">Shopping</button>
+    <button class="tab-btn" onclick="showConvoTab('directions', this)">Directions</button>
+    <button class="tab-btn" onclick="showConvoTab('emergency', this)">Emergency</button>
+  </div>
+
+  <div id="ctab-intro" class="tab-content active"></div>
+  <div id="ctab-small" class="tab-content"></div>
+  <div id="ctab-food" class="tab-content"></div>
+  <div id="ctab-shop" class="tab-content"></div>
+  <div id="ctab-directions" class="tab-content"></div>
+  <div id="ctab-emergency" class="tab-content"></div>
+</div>
+
+<!-- ============ NUMBERS ============ -->
+<div id="section-numbers" class="section">
+  <h2 class="section-title">Numbers & <span class="accent">Time</span></h2>
+  <p class="section-sub">Filipinos use both native Tagalog and Spanish-derived numbers in daily life.</p>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showNumTab('native', this)">Native Tagalog</button>
+    <button class="tab-btn" onclick="showNumTab('spanish', this)">Spanish (Common)</button>
+    <button class="tab-btn" onclick="showNumTab('time', this)">Telling Time</button>
+    <button class="tab-btn" onclick="showNumTab('date', this)">Dates & Days</button>
+  </div>
+
+  <div id="ntab-native" class="tab-content active">
+    <div class="tip-box">
+      <h5>💡 Two Number Systems</h5>
+      <p>The Philippines officially uses <strong>native Tagalog numbers</strong>, but due to Spanish colonization, <strong>Spanish-derived numbers</strong> are more commonly used in daily life — especially for money, time, and large numbers.</p>
+    </div>
+    <div class="number-grid" id="native-numbers"></div>
+  </div>
+
+  <div id="ntab-spanish" class="tab-content">
+    <div class="tip-box">
+      <h5>💡 Spanish Influence</h5>
+      <p>Spain colonized the Philippines for over 300 years (1565–1898), leaving a deep mark on the language. Spanish numbers became embedded in everyday speech — you'll hear <em>uno, dos, tres</em> far more than native equivalents in markets, stores, and conversations about money.</p>
+    </div>
+    <div class="number-grid" id="spanish-numbers"></div>
+  </div>
+
+  <div id="ntab-time" class="tab-content">
+    <div class="tip-box">
+      <h5>⏰ Telling Time in Tagalog</h5>
+      <p>Time is typically expressed using Spanish-derived numbers. <em>Alas</em> (from <em>a las</em>) precedes the hour, and <em>ng umaga/tanghali/hapon/gabi</em> indicates AM/PM.</p>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="conj-table">
+        <thead><tr><th>Time</th><th>Tagalog</th><th>Literal Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>1:00</td><td class="highlight">Ala-una</td><td>At one</td></tr>
+          <tr><td>2:00</td><td class="highlight">Alas dos</td><td>At two</td></tr>
+          <tr><td>3:30</td><td class="highlight">Alas tres y media</td><td>Three and a half</td></tr>
+          <tr><td>4:15</td><td class="highlight">Alas kuwatro y kuwarto</td><td>Four and a quarter</td></tr>
+          <tr><td>12:00 (noon)</td><td class="highlight">Tanghali / Alas dose ng tanghali</td><td>Midday</td></tr>
+          <tr><td>12:00 (midnight)</td><td class="highlight">Hatinggabi</td><td>Half of the night</td></tr>
+          <tr><td>Morning (AM)</td><td class="highlight">ng umaga</td><td>of morning</td></tr>
+          <tr><td>Afternoon (PM)</td><td class="highlight">ng hapon</td><td>of afternoon</td></tr>
+          <tr><td>Evening</td><td class="highlight">ng gabi</td><td>of night</td></tr>
+          <tr><td>What time is it?</td><td class="highlight">Anong oras na?</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="ntab-date" class="tab-content">
+    <h3 style="color:var(--gold); margin-bottom:1rem;">Days of the Week (Mga Araw ng Linggo)</h3>
+    <div class="number-grid" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));">
+      <div class="number-cell"><div class="tagalog-num">Lunes</div><div class="romanized-num">Lunes</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:2px;">Monday</div></div>
+      <div class="number-cell"><div class="tagalog-num">Martes</div><div class="romanized-num">Martes</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:2px;">Tuesday</div></div>
+      <div class="number-cell"><div class="tagalog-num">Miyerkules</div><div class="romanized-num">Miyerkules</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:2px;">Wednesday</div></div>
+      <div class="number-cell"><div class="tagalog-num">Huwebes</div><div class="romanized-num">Huwebes</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:2px;">Thursday</div></div>
+      <div class="number-cell"><div class="tagalog-num">Biyernes</div><div class="romanized-num">Biyernes</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:2px;">Friday</div></div>
+      <div class="number-cell"><div class="tagalog-num">Sabado</div><div class="romanized-num">Sabado</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:2px;">Saturday</div></div>
+      <div class="number-cell"><div class="tagalog-num">Linggo</div><div class="romanized-num">Linggo</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:2px;">Sunday / Week</div></div>
+    </div>
+    <h3 style="color:var(--gold); margin-top:2rem; margin-bottom:1rem;">Months (Mga Buwan)</h3>
+    <div class="number-grid" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));">
+      <div class="number-cell"><div class="tagalog-num">Enero</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:2px;">January</div></div>
+      <div class="number-cell"><div class="tagalog-num">Pebrero</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:2px;">February</div></div>
+      <div class="number-cell"><div class="tagalog-num">Marso</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:2px;">March</div></div>
+      <div class="number-cell"><div class="tagalog-num">Abril</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:2px;">April</div></div>
+      <div class="number-cell"><div class="tagalog-num">Mayo</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:2px;">May</div></div>
+      <div class="number-cell"><div class="tagalog-num">Hunyo</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:2px;">June</div></div>
+      <div class="number-cell"><div class="tagalog-num">Hulyo</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:2px;">July</div></div>
+      <div class="number-cell"><div class="tagalog-num">Agosto</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:2px;">August</div></div>
+      <div class="number-cell"><div class="tagalog-num">Setyembre</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:2px;">September</div></div>
+      <div class="number-cell"><div class="tagalog-num">Oktubre</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:2px;">October</div></div>
+      <div class="number-cell"><div class="tagalog-num">Nobyembre</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:2px;">November</div></div>
+      <div class="number-cell"><div class="tagalog-num">Disyembre</div><div style="color:var(--text-muted);font-size:0.75rem;margin-top:2px;">December</div></div>
+    </div>
+    <div class="tip-box" style="margin-top:1.5rem;">
+      <h5>📅 Expressing Dates</h5>
+      <p><strong>Ika-__ ng [Buwan], [Taon]</strong><br>
+      Ika-<strong>labinlima</strong> ng <strong>Hunyo</strong>, <strong>dalawang libo't dalawampu't anim</strong> — June 15, 2026<br><br>
+      Common shorthand: <em>Anong petsa ngayon?</em> — What's today's date?<br>
+      <em>Ika-__ na ngayon.</em> — It is the __th today.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ QUIZ ============ -->
+<div id="section-quiz" class="section">
+  <h2 class="section-title">Test Your <span class="accent">Knowledge</span></h2>
+  <p class="section-sub">Multiple-choice quizzes on vocabulary, conjugation, and conversation phrases.</p>
+
+  <div class="score-display">
+    <div class="score-num" id="quiz-score">0 / 0</div>
+    <div class="score-label">Current Score</div>
+    <div style="margin-top:1rem;">
+      <button class="btn-primary" onclick="startQuiz()" style="margin-right:0.5rem;">New Quiz</button>
+      <button class="btn-ghost" onclick="startQuiz('hard')">Hard Mode</button>
+    </div>
+  </div>
+
+  <div id="quiz-area"></div>
+</div>
+
+<!-- ============ FACTS ============ -->
+<div id="section-facts" class="section">
+  <h2 class="section-title">Tagalog <span class="accent">Facts</span></h2>
+  <p class="section-sub">Language is culture. Here are fascinating insights about Filipino and Tagalog.</p>
+
+  <div class="card-grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); margin-bottom:3rem;" id="facts-grid"></div>
+
+  <hr class="divider">
+
+  <h3 class="section-title" style="font-size:1.8rem; margin-bottom:0.25rem;">Pronunciation <span class="accent">Guide</span></h3>
+  <p class="section-sub">Tagalog is largely phonetic — spell it as you say it.</p>
+  <div class="phon-card" id="phon-guide"></div>
+
+  <hr class="divider">
+
+  <h3 class="section-title" style="font-size:1.8rem; margin-bottom:0.25rem;">English Words <span class="accent">From Filipino</span></h3>
+  <p class="section-sub">These English words came from Tagalog and other Philippine languages.</p>
+  <div class="card-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+    <div class="card"><div class="tagalog" style="font-size:1.1rem;">Boondocks</div><div class="english" style="margin-top:4px;">From <em>bundok</em> (mountain). Used by American soldiers in WWII.</div></div>
+    <div class="card"><div class="tagalog" style="font-size:1.1rem;">Yo-yo</div><div class="english" style="margin-top:4px;">Borrowed from Filipino dialects — a traditional toy in Luzon.</div></div>
+    <div class="card"><div class="tagalog" style="font-size:1.1rem;">Bamboo</div><div class="english" style="margin-top:4px;">From Malay <em>bambu</em>, closely related to Filipino usage.</div></div>
+    <div class="card"><div class="tagalog" style="font-size:1.1rem;">Gung-ho</div><div class="english" style="margin-top:4px;">Popularized through military contact with Filipinos during WWII.</div></div>
+  </div>
+</div>
+
+<nav class="mobile-nav">
+  <button class="mobile-nav-btn active" onclick="showSection('home')"><span class="icon">🏠</span>Home</button>
+  <button class="mobile-nav-btn" onclick="showSection('vocab')"><span class="icon">📖</span>Words</button>
+  <button class="mobile-nav-btn" onclick="showSection('grammar')"><span class="icon">🔤</span>Grammar</button>
+  <button class="mobile-nav-btn" onclick="showSection('convo')"><span class="icon">💬</span>Talk</button>
+  <button class="mobile-nav-btn" onclick="showSection('quiz')"><span class="icon">✏️</span>Quiz</button>
+</nav>
+
+<footer class="site-footer">
+  <strong>Salita</strong> — Learn Tagalog &nbsp;·&nbsp; 🇵🇭 Mabuhay! &nbsp;·&nbsp; Built with love for Filipino culture
+</footer>
+
+<script>
+// ===================== DATA =====================
+
+const vocabData = [
+  // GREETINGS (25)
+  { tl:'Kumusta', rom:'Ku-mús-ta', en:'How are you?', cat:'greeting' },
+  { tl:'Magandang umaga', rom:'Ma-gan-dang u-má-ga', en:'Good morning', cat:'greeting' },
+  { tl:'Magandang tanghali', rom:'Ma-gan-dang tang-há-li', en:'Good noon', cat:'greeting' },
+  { tl:'Magandang hapon', rom:'Ma-gan-dang ha-pón', en:'Good afternoon', cat:'greeting' },
+  { tl:'Magandang gabi', rom:'Ma-gan-dang gá-bi', en:'Good evening', cat:'greeting' },
+  { tl:'Salamat', rom:'Sa-lá-mat', en:'Thank you', cat:'greeting' },
+  { tl:'Maraming salamat', rom:'Ma-rá-ming sa-lá-mat', en:'Thank you very much', cat:'greeting' },
+  { tl:'Walang anuman', rom:'Wa-lang a-nú-man', en:'You\'re welcome', cat:'greeting' },
+  { tl:'Paalam', rom:'Pa-á-lam', en:'Goodbye', cat:'greeting' },
+  { tl:'Ingat ka', rom:'Í-ngat ka', en:'Take care', cat:'greeting' },
+  { tl:'Oo', rom:'Oh-oh', en:'Yes', cat:'greeting' },
+  { tl:'Hindi', rom:'Hin-dí', en:'No / Not', cat:'greeting' },
+  { tl:'Paumanhin', rom:'Pa-u-man-hín', en:'Excuse me / Sorry', cat:'greeting' },
+  { tl:'Pasensya na', rom:'Pa-sén-sya na', en:'I\'m sorry / Please bear with me', cat:'greeting' },
+  { tl:'Mabuhay', rom:'Ma-bú-hay', en:'Long live / Welcome / Cheers', cat:'greeting' },
+  { tl:'Maligayang bati', rom:'Ma-li-gá-yang bá-ti', en:'Congratulations', cat:'greeting' },
+  { tl:'Maligayang kaarawan', rom:'Ma-li-gá-yang ka-a-rá-wan', en:'Happy birthday', cat:'greeting' },
+  { tl:'Mabuting umaga', rom:'Ma-bú-ting u-má-ga', en:'Good morning (formal)', cat:'greeting' },
+  { tl:'Oo naman', rom:'Oo na-mán', en:'Of course / Yes indeed', cat:'greeting' },
+  { tl:'Sige', rom:'Si-gé', en:'Okay / Go ahead', cat:'greeting' },
+  { tl:'Huwag kang mag-alala', rom:'Hu-wág kang mag-a-a-lá-la', en:'Don\'t worry', cat:'greeting' },
+  { tl:'Sandali lang', rom:'San-dá-li lang', en:'Just a moment', cat:'greeting' },
+  { tl:'Pakiusap', rom:'Pa-ki-ú-sap', en:'Please / I\'m begging you', cat:'greeting' },
+  { tl:'Paki-', rom:'Pa-kí', en:'Please (verb prefix)', cat:'greeting' },
+  { tl:'Tara na', rom:'Tá-ra na', en:'Let\'s go!', cat:'greeting' },
+
+  // DAILY LIFE (50)
+  { tl:'Ako', rom:'A-kó', en:'I / Me', cat:'daily' },
+  { tl:'Ikaw', rom:'I-káw', en:'You', cat:'daily' },
+  { tl:'Siya', rom:'Si-yá', en:'He / She', cat:'daily' },
+  { tl:'Kami', rom:'Ká-mi', en:'We (exclusive)', cat:'daily' },
+  { tl:'Tayo', rom:'Tá-yo', en:'We (inclusive)', cat:'daily' },
+  { tl:'Kayo', rom:'Ká-yo', en:'You (plural / formal)', cat:'daily' },
+  { tl:'Sila', rom:'Sí-la', en:'They', cat:'daily' },
+  { tl:'Gusto', rom:'Gús-to', en:'Want / Like', cat:'daily' },
+  { tl:'Pwede', rom:'Pwé-de', en:'Can / May / Possible', cat:'daily' },
+  { tl:'Kailangan', rom:'Ka-i-lá-ngan', en:'Need / Necessary', cat:'daily' },
+  { tl:'Hindi ko alam', rom:'Hin-dí ko á-lam', en:'I don\'t know', cat:'daily' },
+  { tl:'Alam ko', rom:'Á-lam ko', en:'I know', cat:'daily' },
+  { tl:'Mahal kita', rom:'Ma-hál ki-ta', en:'I love you', cat:'daily' },
+  { tl:'Saan', rom:'Sa-án', en:'Where', cat:'daily' },
+  { tl:'Kailan', rom:'Ka-í-lan', en:'When', cat:'daily' },
+  { tl:'Bakit', rom:'Bá-kit', en:'Why', cat:'daily' },
+  { tl:'Paano', rom:'Pa-á-no', en:'How', cat:'daily' },
+  { tl:'Marami', rom:'Ma-rá-mi', en:'Many / A lot', cat:'daily' },
+  { tl:'Konti', rom:'Kón-ti', en:'A little / Few', cat:'daily' },
+  { tl:'Malaki', rom:'Ma-lá-ki', en:'Big / Large', cat:'daily' },
+  { tl:'Maliit', rom:'Ma-li-ít', en:'Small', cat:'daily' },
+  { tl:'Mahal', rom:'Ma-hál', en:'Expensive / Love', cat:'daily' },
+  { tl:'Mura', rom:'Mu-rá', en:'Cheap / Affordable', cat:'daily' },
+  { tl:'Dito', rom:'Dí-to', en:'Here', cat:'daily' },
+  { tl:'Doon', rom:'Do-ón', en:'There', cat:'daily' },
+  { tl:'Diyan', rom:'Di-yán', en:'There (near you)', cat:'daily' },
+  { tl:'Lahat', rom:'La-hát', en:'All / Everyone', cat:'daily' },
+  { tl:'Wala', rom:'Wa-lá', en:'None / Nothing / Not here', cat:'daily' },
+  { tl:'Meron', rom:'Me-rón', en:'There is / Have', cat:'daily' },
+  { tl:'Bago', rom:'Bá-go', en:'New / Before', cat:'daily' },
+  { tl:'Luma', rom:'Lu-má', en:'Old (object)', cat:'daily' },
+  { tl:'Totoo', rom:'To-tó-o', en:'True / Real', cat:'daily' },
+  { tl:'Hindi totoo', rom:'Hin-dí to-tó-o', en:'Not true / False', cat:'daily' },
+  { tl:'Importante', rom:'Im-por-tán-te', en:'Important', cat:'daily' },
+  { tl:'Madali', rom:'Ma-dá-li', en:'Easy', cat:'daily' },
+  { tl:'Mahirap', rom:'Ma-hí-rap', en:'Difficult / Poor', cat:'daily' },
+  { tl:'Tama', rom:'Tá-ma', en:'Correct / Right', cat:'daily' },
+  { tl:'Mali', rom:'Má-li', en:'Wrong / Mistake', cat:'daily' },
+  { tl:'Siguro', rom:'Si-gú-ro', en:'Maybe / Perhaps', cat:'daily' },
+  { tl:'Talaga', rom:'Ta-lá-ga', en:'Really / Indeed', cat:'daily' },
+  { tl:'Naman', rom:'Na-mán', en:'(softener / contrast particle)', cat:'daily' },
+  { tl:'Na', rom:'Na', en:'Already / Now', cat:'daily' },
+  { tl:'Pa', rom:'Pa', en:'Still / Yet / More', cat:'daily' },
+  { tl:'Lang', rom:'Lang', en:'Only / Just', cat:'daily' },
+  { tl:'Din / Rin', rom:'Din / Rin', en:'Also / Too', cat:'daily' },
+  { tl:'Nga', rom:'Nga', en:'(emphasis / confirmation particle)', cat:'daily' },
+  { tl:'Ba', rom:'Ba', en:'(question particle)', cat:'daily' },
+  { tl:'Po', rom:'Po', en:'(respect particle)', cat:'daily' },
+  { tl:'Ano', rom:'Á-no', en:'What', cat:'daily' },
+  { tl:'Sino', rom:'Sí-no', en:'Who', cat:'daily' },
+
+  // FOOD (45)
+  { tl:'Kain', rom:'Ka-ín', en:'Eat / Food', cat:'food' },
+  { tl:'Tubig', rom:'Tu-bíg', en:'Water', cat:'food' },
+  { tl:'Kanin', rom:'Ká-nin', en:'Rice (cooked)', cat:'food' },
+  { tl:'Bigas', rom:'Bí-gas', en:'Rice (uncooked)', cat:'food' },
+  { tl:'Adobo', rom:'A-dó-bo', en:'Adobo (vinegar & soy dish)', cat:'food' },
+  { tl:'Sinigang', rom:'Si-ni-gáng', en:'Sour tamarind soup', cat:'food' },
+  { tl:'Lechon', rom:'Le-chón', en:'Roasted pig', cat:'food' },
+  { tl:'Halo-halo', rom:'Há-lo há-lo', en:'Mixed shaved ice dessert', cat:'food' },
+  { tl:'Balut', rom:'Ba-lút', en:'Fertilized duck egg (street food)', cat:'food' },
+  { tl:'Pancit', rom:'Pan-sít', en:'Noodle dish', cat:'food' },
+  { tl:'Lumpia', rom:'Lum-pyá', en:'Spring rolls', cat:'food' },
+  { tl:'Inumin', rom:'I-nú-min', en:'Drink / Beverage', cat:'food' },
+  { tl:'Masarap', rom:'Ma-sá-rap', en:'Delicious / Tasty', cat:'food' },
+  { tl:'Maalat', rom:'Ma-a-lát', en:'Salty', cat:'food' },
+  { tl:'Matamis', rom:'Ma-ta-mís', en:'Sweet', cat:'food' },
+  { tl:'Maanghang', rom:'Ma-ang-háng', en:'Spicy', cat:'food' },
+  { tl:'Maasim', rom:'Ma-a-sím', en:'Sour', cat:'food' },
+  { tl:'Mapait', rom:'Ma-pá-it', en:'Bitter', cat:'food' },
+  { tl:'Gutom', rom:'Gú-tom', en:'Hungry', cat:'food' },
+  { tl:'Busog', rom:'Bu-sóg', en:'Full (from eating)', cat:'food' },
+  { tl:'Kape', rom:'Ká-pe', en:'Coffee', cat:'food' },
+  { tl:'Gatas', rom:'Gá-tas', en:'Milk', cat:'food' },
+  { tl:'Itlog', rom:'It-lóg', en:'Egg', cat:'food' },
+  { tl:'Isda', rom:'Is-dá', en:'Fish', cat:'food' },
+  { tl:'Karne', rom:'Kár-ne', en:'Meat', cat:'food' },
+  { tl:'Baboy', rom:'Bá-boy', en:'Pork / Pig', cat:'food' },
+  { tl:'Manok', rom:'Ma-nók', en:'Chicken', cat:'food' },
+  { tl:'Baka', rom:'Bá-ka', en:'Beef / Cow', cat:'food' },
+  { tl:'Hipon', rom:'Hí-pon', en:'Shrimp', cat:'food' },
+  { tl:'Gulay', rom:'Gú-lay', en:'Vegetables', cat:'food' },
+  { tl:'Prutas', rom:'Prú-tas', en:'Fruit', cat:'food' },
+  { tl:'Mangga', rom:'Mang-gá', en:'Mango', cat:'food' },
+  { tl:'Saging', rom:'Sá-ging', en:'Banana', cat:'food' },
+  { tl:'Kamatis', rom:'Ka-má-tis', en:'Tomato', cat:'food' },
+  { tl:'Sibuyas', rom:'Si-bu-yás', en:'Onion', cat:'food' },
+  { tl:'Bawang', rom:'Ba-wáng', en:'Garlic', cat:'food' },
+  { tl:'Tinapay', rom:'Ti-ná-pay', en:'Bread', cat:'food' },
+  { tl:'Asukal', rom:'A-sú-kal', en:'Sugar', cat:'food' },
+  { tl:'Asin', rom:'Á-sin', en:'Salt', cat:'food' },
+  { tl:'Suka', rom:'Sú-ka', en:'Vinegar', cat:'food' },
+  { tl:'Toyo', rom:'Tó-yo', en:'Soy sauce', cat:'food' },
+  { tl:'Patis', rom:'Pá-tis', en:'Fish sauce', cat:'food' },
+  { tl:'Kalamansi', rom:'Ka-la-man-sí', en:'Philippine lime', cat:'food' },
+  { tl:'Sorbetes', rom:'Sor-bé-tes', en:'Filipino street ice cream', cat:'food' },
+  { tl:'Taho', rom:'Ta-hó', en:'Sweet tofu dessert (street food)', cat:'food' },
+
+  // FAMILY (30)
+  { tl:'Nanay', rom:'Ná-nay', en:'Mother (informal)', cat:'family' },
+  { tl:'Tatay', rom:'Tá-tay', en:'Father (informal)', cat:'family' },
+  { tl:'Ina', rom:'Í-na', en:'Mother (formal)', cat:'family' },
+  { tl:'Ama', rom:'Á-ma', en:'Father (formal)', cat:'family' },
+  { tl:'Lolo', rom:'Ló-lo', en:'Grandfather', cat:'family' },
+  { tl:'Lola', rom:'Ló-la', en:'Grandmother', cat:'family' },
+  { tl:'Kuya', rom:'Kú-ya', en:'Older brother (honorific)', cat:'family' },
+  { tl:'Ate', rom:'Á-te', en:'Older sister (honorific)', cat:'family' },
+  { tl:'Kapatid', rom:'Ka-pá-tid', en:'Sibling', cat:'family' },
+  { tl:'Bunso', rom:'Bun-só', en:'Youngest sibling', cat:'family' },
+  { tl:'Panganay', rom:'Pang-a-náy', en:'Eldest sibling', cat:'family' },
+  { tl:'Anak', rom:'Á-nak', en:'Child / Son / Daughter', cat:'family' },
+  { tl:'Asawa', rom:'A-sá-wa', en:'Spouse', cat:'family' },
+  { tl:'Lalaki', rom:'La-lá-ki', en:'Man / Male / Boy', cat:'family' },
+  { tl:'Babae', rom:'Ba-bá-e', en:'Woman / Female / Girl', cat:'family' },
+  { tl:'Bata', rom:'Bá-ta', en:'Child / Young', cat:'family' },
+  { tl:'Matanda', rom:'Ma-tan-dá', en:'Old person / Elder', cat:'family' },
+  { tl:'Pamilya', rom:'Pa-míl-ya', en:'Family', cat:'family' },
+  { tl:'Kaibigan', rom:'Ka-i-bí-gan', en:'Friend', cat:'family' },
+  { tl:'Pinsan', rom:'Pín-san', en:'Cousin', cat:'family' },
+  { tl:'Tito', rom:'Tí-to', en:'Uncle', cat:'family' },
+  { tl:'Tita', rom:'Tí-ta', en:'Aunt', cat:'family' },
+  { tl:'Bayaw', rom:'Ba-yáw', en:'Brother-in-law', cat:'family' },
+  { tl:'Hipag', rom:'Hí-pag', en:'Sister-in-law', cat:'family' },
+  { tl:'Biyenan', rom:'Bi-yé-nan', en:'Parent-in-law', cat:'family' },
+  { tl:'Apo', rom:'Á-po', en:'Grandchild / Term of respect', cat:'family' },
+  { tl:'Kapitbahay', rom:'Ka-pit-bá-hay', en:'Neighbor', cat:'family' },
+  { tl:'Katrabaho', rom:'Ka-tra-bá-ho', en:'Coworker', cat:'family' },
+  { tl:'Kasintahan', rom:'Ka-sin-tá-han', en:'Sweetheart / Partner', cat:'family' },
+  { tl:'Mahal ko', rom:'Ma-hál ko', en:'My love / My dear', cat:'family' },
+
+  // EMOTIONS (30)
+  { tl:'Masaya', rom:'Ma-sá-ya', en:'Happy', cat:'emotion' },
+  { tl:'Malungkot', rom:'Ma-lung-kót', en:'Sad', cat:'emotion' },
+  { tl:'Galit', rom:'Gá-lit', en:'Angry', cat:'emotion' },
+  { tl:'Takot', rom:'Tá-kot', en:'Afraid / Scared', cat:'emotion' },
+  { tl:'Pagod', rom:'Pá-god', en:'Tired', cat:'emotion' },
+  { tl:'Inaantok', rom:'I-na-an-tók', en:'Sleepy', cat:'emotion' },
+  { tl:'Excited', rom:'Ex-cí-ted', en:'Excited (loanword)', cat:'emotion' },
+  { tl:'Kilig', rom:'Kí-lig', en:'Giddy/butterflies from romance', cat:'emotion' },
+  { tl:'Nahihiya', rom:'Na-hi-hí-ya', en:'Ashamed / Shy', cat:'emotion' },
+  { tl:'Naiinis', rom:'Na-i-í-nis', en:'Annoyed / Irritated', cat:'emotion' },
+  { tl:'Ulol', rom:'U-lól', en:'Crazy (informal)', cat:'emotion' },
+  { tl:'Magalang', rom:'Ma-ga-láng', en:'Respectful / Polite', cat:'emotion' },
+  { tl:'Nag-aalala', rom:'Nag-a-a-lá-la', en:'Worried', cat:'emotion' },
+  { tl:'Natutuwa', rom:'Na-tu-tú-wa', en:'Delighted', cat:'emotion' },
+  { tl:'Nakakatuwa', rom:'Na-ka-ka-tú-wa', en:'Amusing / Cute', cat:'emotion' },
+  { tl:'Nakakainis', rom:'Na-ka-ka-í-nis', en:'Annoying', cat:'emotion' },
+  { tl:'Nakakatakot', rom:'Na-ka-ka-tá-kot', en:'Scary', cat:'emotion' },
+  { tl:'Mahal', rom:'Ma-hál', en:'Love / Dear', cat:'emotion' },
+  { tl:'Lungkot', rom:'Lung-kót', en:'Sadness / Grief', cat:'emotion' },
+  { tl:'Saya', rom:'Sá-ya', en:'Joy / Happiness', cat:'emotion' },
+  { tl:'Hiya', rom:'Hí-ya', en:'Shame / Shyness', cat:'emotion' },
+  { tl:'Tamad', rom:'Ta-mád', en:'Lazy', cat:'emotion' },
+  { tl:'Masipag', rom:'Ma-sí-pag', en:'Hardworking / Diligent', cat:'emotion' },
+  { tl:'Mabait', rom:'Ma-bá-it', en:'Kind / Good-natured', cat:'emotion' },
+  { tl:'Makulit', rom:'Ma-ku-lít', en:'Persistent / Annoying (playfully)', cat:'emotion' },
+  { tl:'Maingay', rom:'Ma-í-ngay', en:'Noisy / Loud', cat:'emotion' },
+  { tl:'Tahimik', rom:'Ta-hí-mik', en:'Quiet / Peaceful', cat:'emotion' },
+  { tl:'Mapagmahal', rom:'Ma-pag-ma-hál', en:'Loving / Affectionate', cat:'emotion' },
+  { tl:'Selos', rom:'Sé-los', en:'Jealous / Jealousy', cat:'emotion' },
+  { tl:'Inggit', rom:'Íng-git', en:'Envy', cat:'emotion' },
+
+  // PLACES (35)
+  { tl:'Bahay', rom:'Bá-hay', en:'House / Home', cat:'place' },
+  { tl:'Palengke', rom:'Pa-léng-ke', en:'Market (wet market)', cat:'place' },
+  { tl:'Ospital', rom:'Os-pi-tál', en:'Hospital', cat:'place' },
+  { tl:'Simbahan', rom:'Sim-bá-han', en:'Church', cat:'place' },
+  { tl:'Paaralan', rom:'Pa-a-rá-lan', en:'School', cat:'place' },
+  { tl:'Tindahan', rom:'Tin-dá-han', en:'Store / Shop', cat:'place' },
+  { tl:'Daan', rom:'Da-án', en:'Road / Street / Way', cat:'place' },
+  { tl:'Dagat', rom:'Dá-gat', en:'Sea / Ocean', cat:'place' },
+  { tl:'Bundok', rom:'Bun-dók', en:'Mountain', cat:'place' },
+  { tl:'Paliparan', rom:'Pa-li-pá-ran', en:'Airport', cat:'place' },
+  { tl:'Estasyon', rom:'Es-tas-yón', en:'Station', cat:'place' },
+  { tl:'Bangko', rom:'Bang-kó', en:'Bank', cat:'place' },
+  { tl:'Parke', rom:'Pár-ke', en:'Park', cat:'place' },
+  { tl:'Restawran', rom:'Res-taw-rán', en:'Restaurant', cat:'place' },
+  { tl:'Palengke', rom:'Pa-léng-ke', en:'Wet market', cat:'place' },
+  { tl:'Mall', rom:'Mol', en:'Shopping mall', cat:'place' },
+  { tl:'Opisina', rom:'O-pi-sí-na', en:'Office', cat:'place' },
+  { tl:'Kusina', rom:'Ku-sí-na', en:'Kitchen', cat:'place' },
+  { tl:'Silid-tulugan', rom:'Si-líd tu-lu-gán', en:'Bedroom', cat:'place' },
+  { tl:'Banyo', rom:'Bán-yo', en:'Bathroom / Restroom', cat:'place' },
+  { tl:'Sala', rom:'Sá-la', en:'Living room', cat:'place' },
+  { tl:'Hardin', rom:'Hár-din', en:'Garden', cat:'place' },
+  { tl:'Ilog', rom:'Í-log', en:'River', cat:'place' },
+  { tl:'Lawa', rom:'Lá-wa', en:'Lake', cat:'place' },
+  { tl:'Talon', rom:'Ta-lón', en:'Waterfall', cat:'place' },
+  { tl:'Isla', rom:'Ís-la', en:'Island', cat:'place' },
+  { tl:'Lungsod', rom:'Lung-sód', en:'City', cat:'place' },
+  { tl:'Bayan', rom:'Ba-yán', en:'Town / Country / Nation', cat:'place' },
+  { tl:'Probinsya', rom:'Pro-bín-sya', en:'Province / Rural area', cat:'place' },
+  { tl:'Baryo', rom:'Bár-yo', en:'Barangay / Village', cat:'place' },
+  { tl:'Kanto', rom:'Kán-to', en:'Street corner', cat:'place' },
+  { tl:'Tulay', rom:'Tu-láy', en:'Bridge', cat:'place' },
+  { tl:'Paliparan', rom:'Pa-li-pá-ran', en:'Airport', cat:'place' },
+  { tl:'Pier', rom:'Pir', en:'Pier / Port', cat:'place' },
+  { tl:'Sementeryo', rom:'Se-men-tér-yo', en:'Cemetery', cat:'place' },
+
+  // TIME (25)
+  { tl:'Ngayon', rom:'Nga-yón', en:'Now / Today', cat:'time' },
+  { tl:'Kahapon', rom:'Ka-ha-pón', en:'Yesterday', cat:'time' },
+  { tl:'Bukas', rom:'Bu-kás', en:'Tomorrow / Open', cat:'time' },
+  { tl:'Mamayang gabi', rom:'Ma-má-yang gá-bi', en:'Tonight / Later tonight', cat:'time' },
+  { tl:'Linggo', rom:'Líng-go', en:'Week / Sunday', cat:'time' },
+  { tl:'Buwan', rom:'Bu-wán', en:'Month / Moon', cat:'time' },
+  { tl:'Taon', rom:'Ta-ón', en:'Year', cat:'time' },
+  { tl:'Umaga', rom:'U-má-ga', en:'Morning', cat:'time' },
+  { tl:'Tanghali', rom:'Tang-há-li', en:'Noon / Midday', cat:'time' },
+  { tl:'Hapon', rom:'Ha-pón', en:'Afternoon', cat:'time' },
+  { tl:'Gabi', rom:'Gá-bi', en:'Night / Evening', cat:'time' },
+  { tl:'Mabilis', rom:'Ma-bí-lis', en:'Fast / Quick', cat:'time' },
+  { tl:'Mabagal', rom:'Ma-bá-gal', en:'Slow', cat:'time' },
+  { tl:'Maaga', rom:'Ma-á-ga', en:'Early', cat:'time' },
+  { tl:'Huli', rom:'Hú-li', en:'Late', cat:'time' },
+  { tl:'Minuto', rom:'Mi-nú-to', en:'Minute', cat:'time' },
+  { tl:'Oras', rom:'Ó-ras', en:'Hour / Time', cat:'time' },
+  { tl:'Segundo', rom:'Se-gún-do', en:'Second', cat:'time' },
+  { tl:'Sandali', rom:'San-dá-li', en:'A moment / A while', cat:'time' },
+  { tl:'Matagal', rom:'Ma-ta-gál', en:'Long time / Taking long', cat:'time' },
+  { tl:'Palagi', rom:'Pa-lá-gi', en:'Always / Usually', cat:'time' },
+  { tl:'Minsan', rom:'Min-sán', en:'Sometimes / Once', cat:'time' },
+  { tl:'Madalas', rom:'Ma-dá-las', en:'Often / Frequently', cat:'time' },
+  { tl:'Bihira', rom:'Bi-hí-ra', en:'Rarely / Seldom', cat:'time' },
+  { tl:'Lagi', rom:'Lá-gi', en:'Always', cat:'time' },
+
+  // BODY PARTS (30)
+  { tl:'Ulo', rom:'U-ló', en:'Head', cat:'body' },
+  { tl:'Mukha', rom:'Muk-hâ', en:'Face', cat:'body' },
+  { tl:'Mata', rom:'Má-ta', en:'Eye(s)', cat:'body' },
+  { tl:'Ilong', rom:'Í-long', en:'Nose', cat:'body' },
+  { tl:'Tainga', rom:'Ta-í-nga', en:'Ear', cat:'body' },
+  { tl:'Bibig', rom:'Bí-big', en:'Mouth', cat:'body' },
+  { tl:'Ngipin', rom:'Ngí-pin', en:'Tooth / Teeth', cat:'body' },
+  { tl:'Dila', rom:'Dí-la', en:'Tongue', cat:'body' },
+  { tl:'Labi', rom:'Lá-bi', en:'Lips', cat:'body' },
+  { tl:'Buhok', rom:'Bu-hók', en:'Hair', cat:'body' },
+  { tl:'Leeg', rom:'Le-ég', en:'Neck', cat:'body' },
+  { tl:'Balikat', rom:'Ba-lí-kat', en:'Shoulder', cat:'body' },
+  { tl:'Braso', rom:'Brá-so', en:'Arm', cat:'body' },
+  { tl:'Kamay', rom:'Ka-máy', en:'Hand', cat:'body' },
+  { tl:'Daliri', rom:'Da-lí-ri', en:'Finger / Toe', cat:'body' },
+  { tl:'Kuko', rom:'Kú-ko', en:'Fingernail', cat:'body' },
+  { tl:'Dibdib', rom:'Díb-dib', en:'Chest', cat:'body' },
+  { tl:'Tiyan', rom:'Ti-yán', en:'Stomach / Belly', cat:'body' },
+  { tl:'Likod', rom:'Lí-kod', en:'Back', cat:'body' },
+  { tl:'Puso', rom:'Pu-só', en:'Heart', cat:'body' },
+  { tl:'Utak', rom:'U-ták', en:'Brain', cat:'body' },
+  { tl:'Buto', rom:'Bu-tó', en:'Bone', cat:'body' },
+  { tl:'Balat', rom:'Ba-lát', en:'Skin', cat:'body' },
+  { tl:'Dugo', rom:'Du-gó', en:'Blood', cat:'body' },
+  { tl:'Binti', rom:'Bin-tí', en:'Leg', cat:'body' },
+  { tl:'Tuhod', rom:'Tu-hód', en:'Knee', cat:'body' },
+  { tl:'Paa', rom:'Pa-á', en:'Foot', cat:'body' },
+  { tl:'Sakong', rom:'Sa-kóng', en:'Heel', cat:'body' },
+  { tl:'Pigi', rom:'Pi-gí', en:'Buttocks', cat:'body' },
+  { tl:'Noo', rom:'No-ó', en:'Forehead', cat:'body' },
+
+  // COLORS (15)
+  { tl:'Pula', rom:'Pu-lá', en:'Red', cat:'color' },
+  { tl:'Asul', rom:'A-súl', en:'Blue', cat:'color' },
+  { tl:'Dilaw', rom:'Di-láw', en:'Yellow', cat:'color' },
+  { tl:'Berde', rom:'Bér-de', en:'Green', cat:'color' },
+  { tl:'Itim', rom:'Í-tim', en:'Black', cat:'color' },
+  { tl:'Puti', rom:'Pu-tí', en:'White', cat:'color' },
+  { tl:'Kahel', rom:'Ka-hél', en:'Orange', cat:'color' },
+  { tl:'Rosas', rom:'Ró-sas', en:'Pink', cat:'color' },
+  { tl:'Lila', rom:'Lí-la', en:'Purple / Violet', cat:'color' },
+  { tl:'Kayumanggi', rom:'Ka-yu-mang-gí', en:'Brown / Filipino skin color', cat:'color' },
+  { tl:'Kulay-abo', rom:'Ku-lay-á-bo', en:'Gray', cat:'color' },
+  { tl:'Ginto', rom:'Gín-to', en:'Gold', cat:'color' },
+  { tl:'Pilak', rom:'Pí-lak', en:'Silver', cat:'color' },
+  { tl:'Beige', rom:'Beige', en:'Beige / Cream', cat:'color' },
+  { tl:'Maroon', rom:'Ma-rún', en:'Maroon / Dark red', cat:'color' },
+
+  // NATURE & WEATHER (25)
+  { tl:'Araw', rom:'Á-raw', en:'Sun / Day', cat:'nature' },
+  { tl:'Buwan', rom:'Bu-wán', en:'Moon / Month', cat:'nature' },
+  { tl:'Bituin', rom:'Bi-tu-ín', en:'Star', cat:'nature' },
+  { tl:'Langit', rom:'Lá-ngit', en:'Sky / Heaven', cat:'nature' },
+  { tl:'Ulap', rom:'U-láp', en:'Cloud', cat:'nature' },
+  { tl:'Ulan', rom:'U-lán', en:'Rain', cat:'nature' },
+  { tl:'Bagyo', rom:'Bág-yo', en:'Typhoon / Storm', cat:'nature' },
+  { tl:'Hangin', rom:'Ha-ngín', en:'Wind', cat:'nature' },
+  { tl:'Lindol', rom:'Lin-dól', en:'Earthquake', cat:'nature' },
+  { tl:'Apoy', rom:'Á-poy', en:'Fire', cat:'nature' },
+  { tl:'Tubig', rom:'Tu-bíg', en:'Water', cat:'nature' },
+  { tl:'Lupa', rom:'Lu-pá', en:'Earth / Ground / Soil', cat:'nature' },
+  { tl:'Puno', rom:'Pu-nó', en:'Tree', cat:'nature' },
+  { tl:'Bulaklak', rom:'Bu-lak-lák', en:'Flower', cat:'nature' },
+  { tl:'Damo', rom:'Dá-mo', en:'Grass / Weeds', cat:'nature' },
+  { tl:'Halaman', rom:'Ha-lá-man', en:'Plant', cat:'nature' },
+  { tl:'Hayop', rom:'Há-yop', en:'Animal', cat:'nature' },
+  { tl:'Ibon', rom:'Í-bon', en:'Bird', cat:'nature' },
+  { tl:'Isda', rom:'Is-dá', en:'Fish', cat:'nature' },
+  { tl:'Aso', rom:'Á-so', en:'Dog', cat:'nature' },
+  { tl:'Pusa', rom:'Pu-sá', en:'Cat', cat:'nature' },
+  { tl:'Kabayo', rom:'Ka-bá-yo', en:'Horse', cat:'nature' },
+  { tl:'Init', rom:'Í-nit', en:'Heat / Hot', cat:'nature' },
+  { tl:'Lamig', rom:'Lá-mig', en:'Cold', cat:'nature' },
+  { tl:'Mainit', rom:'Ma-í-nit', en:'Hot / Warm', cat:'nature' },
+
+  // ACTIONS / VERBS (50)
+  { tl:'Kumain', rom:'Ku-ma-ín', en:'To eat', cat:'action' },
+  { tl:'Uminom', rom:'U-mi-nóm', en:'To drink', cat:'action' },
+  { tl:'Matulog', rom:'Ma-tu-lóg', en:'To sleep', cat:'action' },
+  { tl:'Gumising', rom:'Gu-mi-síng', en:'To wake up', cat:'action' },
+  { tl:'Lumakad', rom:'Lu-ma-kád', en:'To walk', cat:'action' },
+  { tl:'Tumakbo', rom:'Tu-mak-bó', en:'To run', cat:'action' },
+  { tl:'Pumunta', rom:'Pu-mun-tá', en:'To go', cat:'action' },
+  { tl:'Bumalik', rom:'Bu-ma-lík', en:'To return / come back', cat:'action' },
+  { tl:'Pumasok', rom:'Pu-ma-sók', en:'To enter / go inside', cat:'action' },
+  { tl:'Lumabas', rom:'Lu-ma-bás', en:'To exit / go outside', cat:'action' },
+  { tl:'Magsalita', rom:'Mag-sa-li-tá', en:'To speak / talk', cat:'action' },
+  { tl:'Makinig', rom:'Ma-ki-níg', en:'To listen', cat:'action' },
+  { tl:'Tumawa', rom:'Tu-ma-wá', en:'To laugh', cat:'action' },
+  { tl:'Umiyak', rom:'U-mi-yák', en:'To cry', cat:'action' },
+  { tl:'Magluto', rom:'Mag-lu-tó', en:'To cook', cat:'action' },
+  { tl:'Maglinis', rom:'Mag-li-nís', en:'To clean', cat:'action' },
+  { tl:'Magtrabaho', rom:'Mag-tra-bá-ho', en:'To work', cat:'action' },
+  { tl:'Mag-aral', rom:'Mag-a-rál', en:'To study', cat:'action' },
+  { tl:'Magbasa', rom:'Mag-bá-sa', en:'To read', cat:'action' },
+  { tl:'Sumulat', rom:'Su-mu-lát', en:'To write', cat:'action' },
+  { tl:'Manood', rom:'Ma-no-ód', en:'To watch', cat:'action' },
+  { tl:'Makinig ng musika', rom:'Ma-ki-níg ng mu-sí-ka', en:'To listen to music', cat:'action' },
+  { tl:'Bumili', rom:'Bu-mi-lí', en:'To buy', cat:'action' },
+  { tl:'Magbenta', rom:'Mag-bén-ta', en:'To sell', cat:'action' },
+  { tl:'Magbayad', rom:'Mag-ba-yád', en:'To pay', cat:'action' },
+  { tl:'Humingi', rom:'Hu-mi-ngí', en:'To ask for / request', cat:'action' },
+  { tl:'Magbigay', rom:'Mag-bi-gáy', en:'To give', cat:'action' },
+  { tl:'Kumuha', rom:'Ku-mu-há', en:'To get / take', cat:'action' },
+  { tl:'Magbukas', rom:'Mag-bu-kás', en:'To open', cat:'action' },
+  { tl:'Magsara', rom:'Mag-sa-rá', en:'To close', cat:'action' },
+  { tl:'Tumayo', rom:'Tu-ma-yó', en:'To stand up', cat:'action' },
+  { tl:'Umupo', rom:'U-mu-pó', en:'To sit down', cat:'action' },
+  { tl:'Magtanong', rom:'Mag-ta-nóng', en:'To ask a question', cat:'action' },
+  { tl:'Sumagot', rom:'Su-ma-gót', en:'To answer', cat:'action' },
+  { tl:'Tumulong', rom:'Tu-mu-lóng', en:'To help', cat:'action' },
+  { tl:'Umalis', rom:'U-ma-lís', en:'To leave', cat:'action' },
+  { tl:'Dumating', rom:'Du-ma-tíng', en:'To arrive', cat:'action' },
+  { tl:'Magsimula', rom:'Mag-si-mu-lá', en:'To start / begin', cat:'action' },
+  { tl:'Tapusin', rom:'Ta-pu-sín', en:'To finish / end', cat:'action' },
+  { tl:'Magmahal', rom:'Mag-ma-hál', en:'To love', cat:'action' },
+  { tl:'Maglaro', rom:'Mag-la-ró', en:'To play', cat:'action' },
+  { tl:'Lumangoy', rom:'Lu-ma-ngóy', en:'To swim', cat:'action' },
+  { tl:'Umawit', rom:'U-ma-wít', en:'To sing', cat:'action' },
+  { tl:'Sumayaw', rom:'Su-ma-yáw', en:'To dance', cat:'action' },
+  { tl:'Magmaneho', rom:'Mag-ma-né-ho', en:'To drive', cat:'action' },
+  { tl:'Pumili', rom:'Pu-mi-lí', en:'To choose / pick', cat:'action' },
+  { tl:'Maghanap', rom:'Mag-ha-náp', en:'To look for / search', cat:'action' },
+  { tl:'Makita', rom:'Ma-kí-ta', en:'To see / find', cat:'action' },
+  { tl:'Marinig', rom:'Ma-rí-nig', en:'To hear', cat:'action' },
+  { tl:'Maligo', rom:'Ma-lí-go', en:'To bathe / shower', cat:'action' },
+
+  // CLOTHING (20)
+  { tl:'Damit', rom:'Dá-mit', en:'Clothes / Dress', cat:'clothing' },
+  { tl:'Polo', rom:'Pó-lo', en:'Shirt (polo)', cat:'clothing' },
+  { tl:'Pantalon', rom:'Pan-ta-lón', en:'Pants / Trousers', cat:'clothing' },
+  { tl:'Palda', rom:'Pál-da', en:'Skirt', cat:'clothing' },
+  { tl:'Sapatos', rom:'Sa-pá-tos', en:'Shoes', cat:'clothing' },
+  { tl:'Tsinelas', rom:'Tsi-né-las', en:'Slippers / Flip-flops', cat:'clothing' },
+  { tl:'Medyas', rom:'Med-yás', en:'Socks', cat:'clothing' },
+  { tl:'Sumbrero', rom:'Sum-bré-ro', en:'Hat', cat:'clothing' },
+  { tl:'Bag', rom:'Bag', en:'Bag / Backpack', cat:'clothing' },
+  { tl:'Sinturon', rom:'Sin-tu-rón', en:'Belt', cat:'clothing' },
+  { tl:'Dyaket', rom:'Dya-két', en:'Jacket', cat:'clothing' },
+  { tl:'Barong Tagalog', rom:'Bá-rong Ta-ga-lóg', en:'Filipino formal shirt', cat:'clothing' },
+  { tl:'Salamin', rom:'Sa-lá-min', en:'Glasses / Mirror', cat:'clothing' },
+  { tl:'Relo', rom:'Ré-lo', en:'Watch / Clock', cat:'clothing' },
+  { tl:'Hikaw', rom:'Hí-kaw', en:'Earrings', cat:'clothing' },
+  { tl:'Kuwintas', rom:'Ku-wín-tas', en:'Necklace', cat:'clothing' },
+  { tl:'Singsing', rom:'Síng-sing', en:'Ring', cat:'clothing' },
+  { tl:'Terno', rom:'Tér-no', en:'Filipino formal dress', cat:'clothing' },
+  { tl:'Shorts', rom:'Shorts', en:'Shorts', cat:'clothing' },
+  { tl:'Underwear', rom:'An-der-wer', en:'Underwear / Underwear', cat:'clothing' },
+
+  // HEALTH (25)
+  { tl:'Masakit', rom:'Ma-sá-kit', en:'Painful / Sick', cat:'health' },
+  { tl:'Maysakit', rom:'May-sá-kit', en:'Sick / Ill', cat:'health' },
+  { tl:'Lagnat', rom:'Lág-nat', en:'Fever', cat:'health' },
+  { tl:'Ubo', rom:'U-bó', en:'Cough', cat:'health' },
+  { tl:'Sipon', rom:'Sí-pon', en:'Cold / Runny nose', cat:'health' },
+  { tl:'Sakit ng ulo', rom:'Sá-kit ng u-ló', en:'Headache', cat:'health' },
+  { tl:'Sakit ng tiyan', rom:'Sá-kit ng ti-yán', en:'Stomachache', cat:'health' },
+  { tl:'Sugat', rom:'Su-gát', en:'Wound / Cut', cat:'health' },
+  { tl:'Gamot', rom:'Gá-mot', en:'Medicine', cat:'health' },
+  { tl:'Doktor', rom:'Dók-tor', en:'Doctor', cat:'health' },
+  { tl:'Nars', rom:'Nars', en:'Nurse', cat:'health' },
+  { tl:'Ospital', rom:'Os-pi-tál', en:'Hospital', cat:'health' },
+  { tl:'Botika', rom:'Bo-tí-ka', en:'Pharmacy / Drug store', cat:'health' },
+  { tl:'Operasyon', rom:'O-pe-ras-yón', en:'Surgery / Operation', cat:'health' },
+  { tl:'Allergy', rom:'A-ler-dyi', en:'Allergy', cat:'health' },
+  { tl:'Hirap huminga', rom:'Hí-rap hu-mí-nga', en:'Difficulty breathing', cat:'health' },
+  { tl:'Nahimatay', rom:'Na-hi-ma-táy', en:'Fainted', cat:'health' },
+  { tl:'Dumudugo', rom:'Du-mu-du-gó', en:'Bleeding', cat:'health' },
+  { tl:'Masama ang pakiramdam', rom:'Ma-sá-ma ang pa-ki-rám-dam', en:'Feeling unwell', cat:'health' },
+  { tl:'Kumukuha ng gamot', rom:'Ku-mu-ku-há ng gá-mot', en:'Taking medicine', cat:'health' },
+  { tl:'Alak', rom:'Á-lak', en:'Alcohol', cat:'health' },
+  { tl:'Tabako', rom:'Ta-bá-ko', en:'Tobacco / Cigarette', cat:'health' },
+  { tl:'Ehersisyo', rom:'E-her-sis-yó', en:'Exercise', cat:'health' },
+  { tl:'Malusog', rom:'Ma-lu-sóg', en:'Healthy', cat:'health' },
+  { tl:'Payat', rom:'Pá-yat', en:'Thin / Slim', cat:'health' },
+
+  // TRANSPORTATION (20)
+  { tl:'Jeepney', rom:'Jip-ni', en:'Filipino public jeep transport', cat:'transport' },
+  { tl:'Tricycle', rom:'Tri-si-kol', en:'Motorized tricycle (local transport)', cat:'transport' },
+  { tl:'Bus', rom:'Bas', en:'Bus', cat:'transport' },
+  { tl:'Tren', rom:'Tren', en:'Train', cat:'transport' },
+  { tl:'Taksi', rom:'Tak-si', en:'Taxi', cat:'transport' },
+  { tl:'Eroplano', rom:'E-ro-plá-no', en:'Airplane', cat:'transport' },
+  { tl:'Barko', rom:'Bár-ko', en:'Ship / Boat', cat:'transport' },
+  { tl:'Bangka', rom:'Bang-ká', en:'Small boat (outrigger)', cat:'transport' },
+  { tl:'Kotse', rom:'Kót-se', en:'Car', cat:'transport' },
+  { tl:'Motorsiklo', rom:'Mot-or-sík-lo', en:'Motorcycle', cat:'transport' },
+  { tl:'Bisikleta', rom:'Bi-sik-lé-ta', en:'Bicycle', cat:'transport' },
+  { tl:'Kalesa', rom:'Ka-lé-sa', en:'Horse-drawn carriage', cat:'transport' },
+  { tl:'MRT / LRT', rom:'Em Ar Ti / El Ar Ti', en:'Metro rail transit', cat:'transport' },
+  { tl:'Habal-habal', rom:'Ha-bal-ha-bál', en:'Motorcycle taxi (provincial)', cat:'transport' },
+  { tl:'Biyahe', rom:'Bi-yá-he', en:'Trip / Journey', cat:'transport' },
+  { tl:'Pasada', rom:'Pa-sá-da', en:'Route / Regular trip', cat:'transport' },
+  { tl:'Sasakyan', rom:'Sa-sak-yán', en:'Vehicle', cat:'transport' },
+  { tl:'Gasolina', rom:'Ga-so-lí-na', en:'Gasoline / Fuel', cat:'transport' },
+  { tl:'Trapiko', rom:'Tra-pí-ko', en:'Traffic', cat:'transport' },
+  { tl:'Parking', rom:'Par-king', en:'Parking', cat:'transport' },
+
+  // SCHOOL & WORK (25)
+  { tl:'Guro', rom:'Gu-ró', en:'Teacher', cat:'school' },
+  { tl:'Estudyante', rom:'Es-tudh-yán-te', en:'Student', cat:'school' },
+  { tl:'Klase', rom:'Klá-se', en:'Class', cat:'school' },
+  { tl:'Libro', rom:'Líb-ro', en:'Book', cat:'school' },
+  { tl:'Papel', rom:'Pá-pel', en:'Paper', cat:'school' },
+  { tl:'Lapis', rom:'Lá-pis', en:'Pencil', cat:'school' },
+  { tl:'Panulat', rom:'Pa-nu-lát', en:'Pen / Writing instrument', cat:'school' },
+  { tl:'Pisara', rom:'Pi-sá-ra', en:'Blackboard / Whiteboard', cat:'school' },
+  { tl:'Eksamen', rom:'Ek-sá-men', en:'Exam / Test', cat:'school' },
+  { tl:'Takdang-aralin', rom:'Tak-dang a-ra-lín', en:'Homework', cat:'school' },
+  { tl:'Proyekto', rom:'Pro-yék-to', en:'Project', cat:'school' },
+  { tl:'Trabaho', rom:'Tra-bá-ho', en:'Work / Job', cat:'school' },
+  { tl:'Opisina', rom:'O-pi-sí-na', en:'Office', cat:'school' },
+  { tl:'Pulong', rom:'Pu-lóng', en:'Meeting', cat:'school' },
+  { tl:'Suweldo', rom:'Su-wél-do', en:'Salary / Wage', cat:'school' },
+  { tl:'Negosyo', rom:'Ne-gós-yo', en:'Business', cat:'school' },
+  { tl:'Kompanya', rom:'Kom-pán-ya', en:'Company / Firm', cat:'school' },
+  { tl:'Matalino', rom:'Ma-ta-lí-no', en:'Smart / Intelligent', cat:'school' },
+  { tl:'Mahusay', rom:'Ma-hu-sáy', en:'Skilled / Excellent', cat:'school' },
+  { tl:'Abogado', rom:'A-bo-gá-do', en:'Lawyer', cat:'school' },
+  { tl:'Inhinyero', rom:'In-hin-yé-ro', en:'Engineer', cat:'school' },
+  { tl:'Titser', rom:'Tít-ser', en:'Teacher (informal)', cat:'school' },
+  { tl:'Nars', rom:'Nars', en:'Nurse', cat:'school' },
+  { tl:'Magsasaka', rom:'Mag-sa-sá-ka', en:'Farmer', cat:'school' },
+  { tl:'Mangingisda', rom:'Man-gi-ngis-dá', en:'Fisherman', cat:'school' },
+
+  // ADJECTIVES (25)
+  { tl:'Maganda', rom:'Ma-gan-dá', en:'Beautiful / Pretty', cat:'adjective' },
+  { tl:'Pangit', rom:'Pa-ngít', en:'Ugly', cat:'adjective' },
+  { tl:'Mataas', rom:'Ma-ta-ás', en:'Tall / High', cat:'adjective' },
+  { tl:'Mababa', rom:'Ma-ba-bá', en:'Short / Low', cat:'adjective' },
+  { tl:'Mataba', rom:'Ma-tá-ba', en:'Fat / Plump', cat:'adjective' },
+  { tl:'Payat', rom:'Pá-yat', en:'Thin / Slim', cat:'adjective' },
+  { tl:'Malakas', rom:'Ma-la-kás', en:'Strong', cat:'adjective' },
+  { tl:'Mahina', rom:'Ma-hí-na', en:'Weak', cat:'adjective' },
+  { tl:'Mainit', rom:'Ma-í-nit', en:'Hot / Warm', cat:'adjective' },
+  { tl:'Malamig', rom:'Ma-la-míg', en:'Cold', cat:'adjective' },
+  { tl:'Bago', rom:'Bá-go', en:'New', cat:'adjective' },
+  { tl:'Luma', rom:'Lu-má', en:'Old (thing)', cat:'adjective' },
+  { tl:'Buo', rom:'Bu-ó', en:'Whole / Complete', cat:'adjective' },
+  { tl:'Bali', rom:'Bá-li', en:'Broken', cat:'adjective' },
+  { tl:'Malinis', rom:'Ma-lí-nis', en:'Clean', cat:'adjective' },
+  { tl:'Marumi', rom:'Ma-ru-mí', en:'Dirty', cat:'adjective' },
+  { tl:'Maliwanag', rom:'Ma-li-wá-nag', en:'Bright / Clear', cat:'adjective' },
+  { tl:'Madilim', rom:'Ma-dí-lim', en:'Dark / Dim', cat:'adjective' },
+  { tl:'Mabango', rom:'Ma-bá-ngo', en:'Fragrant / Sweet-smelling', cat:'adjective' },
+  { tl:'Mabaho', rom:'Ma-bá-ho', en:'Smelly / Bad-smelling', cat:'adjective' },
+  { tl:'Matigas', rom:'Ma-tí-gas', en:'Hard / Firm', cat:'adjective' },
+  { tl:'Malambot', rom:'Ma-lám-bot', en:'Soft', cat:'adjective' },
+  { tl:'Basa', rom:'Bá-sa', en:'Wet', cat:'adjective' },
+  { tl:'Tuyo', rom:'Tu-yó', en:'Dry', cat:'adjective' },
+  { tl:'Totoo', rom:'To-tó-o', en:'True / Real', cat:'adjective' },
+];
+
+const nativeNumbers = [
+  {n:0, tl:'Sero', rom:'Se-ro'},
+  {n:1, tl:'Isa', rom:'I-sá'},
+  {n:2, tl:'Dalawa', rom:'Da-lá-wa'},
+  {n:3, tl:'Tatlo', rom:'Tát-lo'},
+  {n:4, tl:'Apat', rom:'Á-pat'},
+  {n:5, tl:'Lima', rom:'Lí-ma'},
+  {n:6, tl:'Anim', rom:'Á-nim'},
+  {n:7, tl:'Pito', rom:'Pi-tó'},
+  {n:8, tl:'Walo', rom:'Wá-lo'},
+  {n:9, tl:'Siyam', rom:'Si-yám'},
+  {n:10, tl:'Sampu', rom:'Sám-pu'},
+  {n:11, tl:'Labing-isa', rom:'La-bing-i-sá'},
+  {n:12, tl:'Labindalawa', rom:'La-bin-da-lá-wa'},
+  {n:13, tl:'Labintatlo', rom:'La-bin-tát-lo'},
+  {n:14, tl:'Labing-apat', rom:'La-bing-á-pat'},
+  {n:15, tl:'Labinlima', rom:'La-bin-lí-ma'},
+  {n:20, tl:'Dalawampu', rom:'Da-la-wám-pu'},
+  {n:30, tl:'Tatlumpu', rom:'Tat-lúm-pu'},
+  {n:40, tl:'Apatnapu', rom:'A-pat-ná-pu'},
+  {n:50, tl:'Limampu', rom:'Li-mám-pu'},
+  {n:100, tl:'Isang daan', rom:'I-sang da-án'},
+  {n:1000, tl:'Isang libo', rom:'I-sang li-bó'},
+  {n:1000000, tl:'Isang milyon', rom:'I-sang mil-yón'},
+];
+
+const spanishNumbers = [
+  {n:1, tl:'Uno', rom:'U-no'},
+  {n:2, tl:'Dos', rom:'Dos'},
+  {n:3, tl:'Tres', rom:'Tres'},
+  {n:4, tl:'Kuwatro', rom:'Ku-wá-tro'},
+  {n:5, tl:'Singko', rom:'Síng-ko'},
+  {n:6, tl:'Sais', rom:'Sa-is'},
+  {n:7, tl:'Siyete', rom:'Si-yé-te'},
+  {n:8, tl:'Otso', rom:'Ót-so'},
+  {n:9, tl:'Nuwebe', rom:'Nu-wé-be'},
+  {n:10, tl:'Diyes', rom:'Di-yes'},
+  {n:11, tl:'Onse', rom:'On-se'},
+  {n:12, tl:'Dose', rom:'Do-se'},
+  {n:15, tl:'Kinse', rom:'Kín-se'},
+  {n:20, tl:'Beynte', rom:'Beyn-te'},
+  {n:25, tl:'Beynte singko', rom:'Beyn-te síng-ko'},
+  {n:30, tl:'Trenta', rom:'Trén-ta'},
+  {n:50, tl:'Singkuwenta', rom:'Sing-ku-wén-ta'},
+  {n:100, tl:'Isang daan / Siyento', rom:'Si-yén-to'},
+  {n:500, tl:'Limang daan', rom:'Li-mang da-án'},
+  {n:1000, tl:'Isang libo / Mil', rom:'Mil'},
+];
+
+const conversations = {
+  intro: [
+    {
+      title:'Meeting Someone for the First Time',
+      context:'You\'re at a social gathering and meet a Filipino.',
+      lines:[
+        {speaker:'A', tl:'Kumusta? Ako si [Name].', rom:'Ku-mús-ta? A-kó si...', en:'How are you? I am [Name].'},
+        {speaker:'B', tl:'Mabuti naman! Ako naman si Maria. Pilipino ka ba?', rom:'Ma-bú-ti na-mán! A-kó na-mán si Maria. Pi-li-pí-no ka ba?', en:'I\'m fine! I\'m Maria. Are you Filipino?'},
+        {speaker:'A', tl:'Hindi. Nag-aaral ako ng Tagalog.', rom:'Hin-dí. Nag-a-á-ral a-kó ng Ta-ga-lóg.', en:'No. I\'m studying Tagalog.'},
+        {speaker:'B', tl:'Wow, magaling! Saan ka nanggaling?', rom:'Wow, ma-ga-líng! Sa-án ka nang-gá-ling?', en:'Wow, impressive! Where are you from?'},
+        {speaker:'A', tl:'Galing ako sa [lugar]. Matagal ka nang narito?', rom:'Ga-líng a-kó sa... Ma-ta-gál ka nang na-rí-to?', en:'I\'m from [place]. Have you been here long?'},
+        {speaker:'B', tl:'Halos dalawang taon na. Nalulugod akong makilala ka!', rom:'Ha-lós da-lá-wang ta-ón na. Na-lu-lu-gód a-kóng ma-ki-la-lá ka!', en:'Almost two years. Nice to meet you!'},
+      ]
+    },
+    {
+      title:'Basic Self-Introduction',
+      context:'Introducing yourself formally.',
+      lines:[
+        {speaker:'A', tl:'Magandang araw! Ang pangalan ko ay [Name].', rom:'Ma-gan-dáng a-ráw! Ang pa-nga-lán ko ay...', en:'Good day! My name is [Name].'},
+        {speaker:'B', tl:'Magandang araw din! Kumusta ka?', rom:'Ma-gan-dáng a-ráw din! Ku-mús-ta ka?', en:'Good day too! How are you?'},
+        {speaker:'A', tl:'Mabuti naman po, salamat. At kayo?', rom:'Ma-bú-ti na-mán po, sa-lá-mat. At ká-yo?', en:'I\'m fine, thank you. And you? (formal)'},
+        {speaker:'B', tl:'Mabuti rin. Taga-saan ka?', rom:'Ma-bú-ti rin. Ta-ga-sa-án ka?', en:'Fine too. Where are you from?'},
+      ]
+    }
+  ],
+  small: [
+    {
+      title:'Chatting About the Weather',
+      context:'A casual conversation about the Philippine heat.',
+      lines:[
+        {speaker:'A', tl:'Ang init naman ngayon!', rom:'Ang í-nit na-mán nga-yón!', en:'It\'s so hot today!'},
+        {speaker:'B', tl:'Oo nga! Mainit dito lagi, lalo na sa tag-araw.', rom:'Oo nga! Ma-í-nit di-to lá-gi, la-lo na sa tag-á-raw.', en:'Right! It\'s always hot here, especially in summer.'},
+        {speaker:'A', tl:'Kailan ba umuulan dito?', rom:'Ka-í-lan ba u-mu-u-lan dí-to?', en:'When does it rain here?'},
+        {speaker:'B', tl:'Sa ber-ber months — Nobyembre hanggang Pebrero.', rom:'Sa ber-ber months...', en:'During the "ber-ber months" — November through February.'},
+      ]
+    },
+    {
+      title:'Talking About Food',
+      context:'Filipinos love talking about food — it\'s central to culture.',
+      lines:[
+        {speaker:'A', tl:'Kumain ka na ba?', rom:'Ku-ma-ín ka na ba?', en:'Have you eaten yet?'},
+        {speaker:'B', tl:'Hindi pa! Gutom na ako. Ikaw?', rom:'Hin-dí pa! Gu-tóm na a-kó. I-káw?', en:'Not yet! I\'m hungry. You?'},
+        {speaker:'A', tl:'Kain na tayo! May alam kang magandang restaurant?', rom:'Ka-ín na tá-yo! May á-lam kang ma-gan-dáng...', en:'Let\'s eat! Do you know a good restaurant?'},
+        {speaker:'B', tl:'Meron! Masarap ang adobo doon.', rom:'Me-rón! Ma-sá-rap ang a-dó-bo do-ón.', en:'I know one! The adobo there is delicious.'},
+        {speaker:'A', tl:'Sige! Paborito ko ang adobo.', rom:'Si-gé! Pa-bo-rí-to ko ang a-dó-bo.', en:'Let\'s go! Adobo is my favorite.'},
+      ]
+    }
+  ],
+  food: [
+    {
+      title:'Ordering at a Filipino Restaurant',
+      context:'At a local restaurant (carinderia or restaurant).',
+      lines:[
+        {speaker:'A', tl:'Magandang hapon! Puwede po ba kaming umupo dito?', rom:'Ma-gan-dáng ha-pón! Pu-wé-de po ba ká-ming u-mu-pó di-to?', en:'Good afternoon! May we sit here?'},
+        {speaker:'B', tl:'Oo, po! Ano po ang inyong order?', rom:'Oo po! Á-no po ang in-yóng or-der?', en:'Yes! What would you like to order?'},
+        {speaker:'A', tl:'Isang adobo at isang siniguang baboy, pwede po ba?', rom:'I-sang a-dó-bo at i-sang si-ni-gwáng ba-bóy, pu-wé-de po ba?', en:'One adobo and one pork sinigang, please.'},
+        {speaker:'B', tl:'Sige po! Anong drink ang gusto ninyo?', rom:'Si-gé po! A-nóng drink ang gús-to nin-yó?', en:'Of course! What drink would you like?'},
+        {speaker:'A', tl:'Tubig lang po, salamat. Magkano po ang lahat?', rom:'Tu-bíg lang po, sa-lá-mat. Mag-ká-no po ang la-hát?', en:'Just water, thank you. How much is the total?'},
+        {speaker:'B', tl:'Dalawang daan po.', rom:'Da-lá-wang da-án po.', en:'Two hundred pesos.'},
+      ]
+    }
+  ],
+  shop: [
+    {
+      title:'Bargaining at the Market',
+      context:'Haggling is common in wet markets and street shops.',
+      lines:[
+        {speaker:'A', tl:'Magkano po ito?', rom:'Mag-ká-no po i-to?', en:'How much is this?'},
+        {speaker:'B', tl:'Dalawang daan po.', rom:'Da-lá-wang da-án po.', en:'Two hundred pesos.'},
+        {speaker:'A', tl:'Mahal naman po. Puwede bang isang daan at limampu?', rom:'Ma-hál na-mán po. Pu-wé-de bang i-sang da-án at li-mám-pu?', en:'That\'s expensive. Can it be one hundred fifty?'},
+        {speaker:'B', tl:'Ay, hindi na po. Isang daan at wampu na lang.', rom:'Ay, hin-dí na po. I-sang da-án at wam-pú na lang.', en:'I can\'t. One hundred seventy is the lowest.'},
+        {speaker:'A', tl:'Sige na po! Dalawa na lang, libre tayo!', rom:'Si-gé na po! Da-lá-wa na lang, lib-re tá-yo!', en:'Okay! I\'ll take two, let\'s make a deal!'},
+        {speaker:'B', tl:'Haha! Sige, deal!', rom:'Ha-ha! Si-gé, deal!', en:'Haha! Okay, deal!'},
+      ]
+    }
+  ],
+  directions: [
+    {
+      title:'Asking for Directions',
+      context:'Getting around in a Filipino city.',
+      lines:[
+        {speaker:'A', tl:'Excuse me po, saan po ang pinakamalapit na CR?', rom:'Excuse me po, sa-án po ang pi-na-ka-ma-lá-pit na CR?', en:'Excuse me, where is the nearest restroom? (CR = Comfort Room)'},
+        {speaker:'B', tl:'Diyan po, sa kanan, pagkatapos ng escalator.', rom:'Di-yán po, sa ká-nan, pag-ka-tá-pos ng escalator.', en:'Over there, on the right, after the escalator.'},
+        {speaker:'A', tl:'Salamat po! Malayo ba ang SM Mall dito?', rom:'Sa-lá-mat po! Ma-la-yo ba ang SM Mall di-to?', en:'Thank you! Is SM Mall far from here?'},
+        {speaker:'B', tl:'Hindi naman. Sampung minuto sa jeepney.', rom:'Hin-dí na-mán. Sám-pu-ng mi-nu-to sa jeepney.', en:'Not really. Ten minutes by jeepney.'},
+        {speaker:'A', tl:'Saan ako sasakay ng jeepney?', rom:'Sa-án a-kó sa-sá-kay ng jeepney?', en:'Where do I board the jeepney?'},
+        {speaker:'B', tl:'Doon po sa kanto. Hintayin ang may karatula.', rom:'Do-ón po sa kán-to. Hin-ta-yín ang may ka-ra-tú-la.', en:'Over there at the corner. Wait for the one with the sign.'},
+      ]
+    }
+  ],
+  emergency: [
+    {
+      title:'Emergency Phrases',
+      context:'Essential phrases for urgent situations.',
+      lines:[
+        {speaker:'A', tl:'Tulong! May nagnanakaw!', rom:'Tu-lóng! May nag-na-ná-kaw!', en:'Help! There\'s a thief!'},
+        {speaker:'A', tl:'Huwag! Ito ay emergency!', rom:'Hu-wág! I-to ay emergency!', en:'Stop! This is an emergency!'},
+        {speaker:'A', tl:'Mangyaring tawagan ang pulis / ambulansya.', rom:'Man-gyá-ring ta-wa-gán ang pu-lis / am-bu-lán-sya.', en:'Please call the police / ambulance.'},
+        {speaker:'A', tl:'Nasaan ang ospital?', rom:'Na-sa-án ang os-pi-tál?', en:'Where is the hospital?'},
+        {speaker:'A', tl:'May masakit akong kasama.', rom:'May ma-sá-kit a-kóng ka-sá-ma.', en:'My companion is sick.'},
+        {speaker:'A', tl:'Hindi ko maintindihan. Magsalita po kayo ng Ingles.', rom:'Hin-dí ko ma-in-tin-di-hán. Mag-sa-li-tá po ká-yo ng Ing-les.', en:'I don\'t understand. Please speak English.'},
+      ]
+    }
+  ],
+};
+
+const funFacts = [
+  { icon:'🌏', title:'Over 185 Languages', text:'The Philippines has over 185 living languages. Tagalog is the basis of Filipino, the national language, but Cebuano, Ilocano, Hiligaynon, and many others are widely spoken.' },
+  { icon:'📜', title:'Baybayin Script', text:'Before Spanish colonization, Filipinos wrote using Baybayin — an indigenous script written on bamboo and leaves. It\'s now experiencing a cultural revival.' },
+  { icon:'🏛️', title:'Spanish Colonial Legacy', text:'Over 4,000 Spanish loanwords exist in Tagalog — from numbers (dos, tres) to body parts (noo = forehead, from "frente"), food, and religion.' },
+  { icon:'🔤', title:'No Gender in Pronouns', text:'Tagalog has no grammatical gender. The word "siya" means both "he" and "she" — making Tagalog one of the most naturally gender-neutral languages.' },
+  { icon:'🤝', title:'The "Po" & "Opo" Culture', text:'"Po" and "opo" are particles added to show respect to elders — a cornerstone of Filipino values. Opo = respectful yes; Po = polite particle. Using them wins instant goodwill.' },
+  { icon:'🧩', title:'Verb-Focus Grammar', text:'Tagalog is a verb-focus language where affixes on the verb indicate what the sentence is "about" — the actor, object, or location. It\'s unlike most Asian and European languages.' },
+  { icon:'🇺🇸', title:'American English Influence', text:'The Philippines was an American colony (1898–1946), and English became a co-official language. Modern Filipino speech constantly blends English and Tagalog — this is called "Taglish."' },
+  { icon:'🌺', title:'Reduplication for Meaning', text:'Doubling words changes or intensifies meaning: "bilis" (speed) → "bilisan" (hurry). "Halo-halo" literally means "mix-mix." Reduplication is a key feature of the language.' },
+  { icon:'💬', title:'"Kilig" — Untranslatable', text:'"Kilig" describes the giddy, butterflies-in-the-stomach feeling from romantic moments. It has no direct English equivalent and was added to Oxford as a Filipino loanword.' },
+  { icon:'🍚', title:'Rice = Life', text:'Tagalog has distinct words for different rice states: "palay" (rice plant), "bigas" (uncooked rice), "kanin" (cooked rice). Rice is so central that "kain na tayo!" (let\'s eat!) is a universal Filipino greeting.' },
+  { icon:'📱', title:'Taglish Nation', text:'Filipinos seamlessly switch between Tagalog and English mid-sentence — "Kumain ka na ba? No? Let\'s go, masarap doon!" This code-switching (Taglish) is completely natural and universal.' },
+  { icon:'🎵', title:'OPM & Language', text:'Original Pilipino Music (OPM) has kept Tagalog alive in culture. Filipino love songs are famously emotional — the language\'s melodic quality makes it perfect for music and poetry.' },
+];
+
+const pronunciationGuide = [
+  { letter:'A', sound:'ah', example:'aso (dog)', tip:'Always pure "ah" like in "father" — never the flat English "a"' },
+  { letter:'E', sound:'eh', example:'echo', tip:'Pure "e" sound, like in "bed" — but shorter and cleaner' },
+  { letter:'I', sound:'ee', example:'ito (this)', tip:'Pure "ee" — never the English "i" from "bit"' },
+  { letter:'O', sound:'oh', example:'oo (yes)', tip:'Round "oh" like in "boat" — but without the glide' },
+  { letter:'U', sound:'oo', example:'tubig (water)', tip:'Pure "oo" like in "food" — never "uh" or "yoo"' },
+  { letter:'NG', sound:'ng', example:'ngayon (today)', tip:'Tagalog unique: NG can start words! Like "singer" but without the "si"' },
+  { letter:'NY', sound:'ny', example:'nyo (your)', tip:'Like the Spanish "ñ" in "mañana" — one fluid sound' },
+  { letter:"'", sound:'glottal stop', example:"ba't (why)", tip:'A brief stop in the throat. Highly affects meaning — "aso" vs "aso\'" can differ!' },
+  { letter:'R', sound:'soft r', example:'mahal', tip:'Tagalog R is closer to Spanish — a light flap, not the hard English R' },
+];
+
+// ===================== RENDERING =====================
+
+function renderVocab(data) {
+  const grid = document.getElementById('vocab-grid');
+  grid.innerHTML = data.map(w => `
+    <div class="word-card" onclick="this.classList.toggle('flipped')">
+      <div class="word-front">
+        <div class="category-badge cat-${w.cat}">${w.cat}</div>
+        <div class="tagalog">${w.tl}</div>
+        <div class="romanized">${w.rom}</div>
+        <div class="english">${w.en}</div>
+      </div>
+      <div class="word-back" style="text-align:center; padding:0.5rem 0;">
+        <div style="color:var(--text-muted); font-size:0.75rem; margin-bottom:8px;">English</div>
+        <div style="font-size:1.2rem; color:var(--text); font-weight:600;">${w.en}</div>
+        <div style="color:var(--text-muted); font-size:0.75rem; margin-top:12px;">↩ click to flip back</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterVocab(cat, btn) {
+  document.querySelectorAll('#vocab-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('vocab-search').value = '';
+  const filtered = cat === 'all' ? vocabData : vocabData.filter(w => w.cat === cat);
+  renderVocab(filtered);
+}
+
+function searchVocab(val) {
+  const q = val.toLowerCase();
+  if (!q) { renderVocab(vocabData); return; }
+  renderVocab(vocabData.filter(w => w.tl.toLowerCase().includes(q) || w.en.toLowerCase().includes(q) || w.rom.toLowerCase().includes(q)));
+}
+
+function renderNumbers() {
+  document.getElementById('native-numbers').innerHTML = nativeNumbers.map(n => `
+    <div class="number-cell">
+      <div class="num">${n.n.toLocaleString()}</div>
+      <div class="tagalog-num">${n.tl}</div>
+      <div class="romanized-num">${n.rom}</div>
+    </div>
+  `).join('');
+  document.getElementById('spanish-numbers').innerHTML = spanishNumbers.map(n => `
+    <div class="number-cell">
+      <div class="num">${n.n.toLocaleString()}</div>
+      <div class="tagalog-num">${n.tl}</div>
+      <div class="romanized-num">${n.rom}</div>
+    </div>
+  `).join('');
+}
+
+function renderConversations() {
+  Object.entries(conversations).forEach(([key, dialogues]) => {
+    const container = document.getElementById('ctab-' + key);
+    if (!container) return;
+    container.innerHTML = dialogues.map(d => `
+      <div class="dialogue-box">
+        <div class="dialogue-title">${d.title}</div>
+        <div class="dialogue-context">📍 ${d.context}</div>
+        ${d.lines.map(l => `
+          <div class="dialogue-line${l.speaker === 'B' ? ' right' : ''}">
+            <div class="speaker-avatar speaker-${l.speaker.toLowerCase()}">${l.speaker === 'A' ? '🧑' : '🇵🇭'}</div>
+            <div class="bubble">
+              <div class="tagalog-line">${l.tl}</div>
+              <div class="romanize-line">${l.rom}</div>
+              <div class="english-line">${l.en}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `).join('');
+  });
+}
+
+function renderFacts() {
+  document.getElementById('facts-grid').innerHTML = funFacts.map(f => `
+    <div class="fact-card">
+      <div class="fact-icon">${f.icon}</div>
+      <h4>${f.title}</h4>
+      <p>${f.text}</p>
+    </div>
+  `).join('');
+
+  document.getElementById('phon-guide').innerHTML = pronunciationGuide.map(p => `
+    <div class="phon-row">
+      <div class="phon-letter">${p.letter}</div>
+      <div>
+        <div class="phon-sound">Sound: <strong style="color:var(--gold);">"${p.sound}"</strong></div>
+        <div class="phon-example">Example: <em>${p.example}</em></div>
+        <div class="phon-tip">💡 ${p.tip}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===================== QUIZ =====================
+
+let quizScore = 0, quizTotal = 0, quizAnswered = false;
+
+function startQuiz(mode) {
+  quizScore = 0; quizTotal = 0;
+  updateScore();
+  const pool = [...vocabData].sort(() => Math.random() - 0.5).slice(0, 8);
+  const area = document.getElementById('quiz-area');
+  area.innerHTML = '';
+  pool.forEach((w, i) => {
+    const wrongPool = vocabData.filter(x => x.tl !== w.tl);
+    const wrongs = wrongPool.sort(() => Math.random() - 0.5).slice(0, 3).map(x => x.en);
+    const options = [...wrongs, w.en].sort(() => Math.random() - 0.5);
+    const isHard = mode === 'hard';
+    const question = isHard
+      ? `<span class="qword">${w.en}</span> → in Tagalog is?`
+      : `What does <span class="qword">${w.tl}</span> mean?`;
+    const optLabels = isHard
+      ? options.map(o => {
+          const match = vocabData.find(x => x.en === o);
+          return match ? match.tl : o;
+        })
+      : options;
+    const correctLabel = isHard ? w.tl : w.en;
+
+    area.innerHTML += `
+      <div class="quiz-card" id="qcard-${i}">
+        <div class="quiz-q">${question}</div>
+        <div class="quiz-options">
+          ${optLabels.map(opt => `
+            <button class="quiz-opt" onclick="answerQuiz(this, '${escQ(opt)}', '${escQ(correctLabel)}', 'qcard-${i}')">${opt}</button>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    quizTotal++;
+  });
+  updateScore();
+}
+
+function escQ(s) { return s.replace(/'/g, "\\'"); }
+
+function answerQuiz(btn, chosen, correct, cardId) {
+  const card = document.getElementById(cardId);
+  const btns = card.querySelectorAll('.quiz-opt');
+  btns.forEach(b => {
+    b.onclick = null;
+    if (b.textContent.trim() === correct) b.classList.add('correct');
+  });
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    quizScore++;
+  } else {
+    btn.classList.add('wrong');
+  }
+  updateScore();
+}
+
+function updateScore() {
+  document.getElementById('quiz-score').textContent = `${quizScore} / ${quizTotal}`;
+}
+
+// ===================== NAV =====================
+
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => { s.classList.remove('active'); s.style.display = 'none'; });
+  const sec = document.getElementById('section-' + name);
+  if (sec) { sec.classList.add('active'); sec.style.display = 'block'; }
+
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.mobile-nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll(`.nav-btn`).forEach(b => {
+    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(name)) b.classList.add('active');
+  });
+  document.querySelectorAll(`.mobile-nav-btn`).forEach(b => {
+    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(name)) b.classList.add('active');
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showGrammarTab(name, btn) {
+  document.querySelectorAll('[id^="gtab-"]').forEach(t => t.classList.remove('active'));
+  document.getElementById('gtab-' + name).classList.add('active');
+  document.querySelectorAll('#section-grammar .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function showConvoTab(name, btn) {
+  document.querySelectorAll('[id^="ctab-"]').forEach(t => t.classList.remove('active'));
+  document.getElementById('ctab-' + name).classList.add('active');
+  document.querySelectorAll('#section-convo .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function showNumTab(name, btn) {
+  document.querySelectorAll('[id^="ntab-"]').forEach(t => t.classList.remove('active'));
+  document.getElementById('ntab-' + name).classList.add('active');
+  document.querySelectorAll('#section-numbers .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function showWordDetail(tl, en, rom) {
+  document.getElementById('wdm-tagalog').textContent = tl;
+  document.getElementById('wdm-english').textContent = en;
+  document.getElementById('wdm-romanized').textContent = rom;
+  document.getElementById('word-detail-modal').style.display = 'block';
+}
+
+// ===================== INIT =====================
+document.addEventListener('DOMContentLoaded', () => {
+  renderVocab(vocabData);
+  renderNumbers();
+  renderConversations();
+  renderFacts();
+  startQuiz();
+});
+</script>
+</body>
+</html>
